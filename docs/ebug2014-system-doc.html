@@ -296,13 +296,21 @@ Error message and password prompt
 
 <li>$:/themes/tiddlywiki/vanilla</li>
 
+<li>Assembly Procedure</li>
+
 <li>Blob Camera</li>
 
+<li>Communication Network</li>
+
 <li>eBug2014 Swarm</li>
+
+<li>Interesting Applications</li>
 
 <li>Localization System</li>
 
 <li>Reports and Papers</li>
+
+<li>Repositories</li>
 
 </ul>
 </p>
@@ -8539,8 +8547,8 @@ Error message and password prompt
 <div created="20170822165610761" modified="20170822165612681" title="$:/state/plugin-info--270617185-$:/themes/tiddlywiki/tight-heavier">
 <pre>yes</pre>
 </div>
-<div created="20170822165749745" modified="20170822170024236" title="$:/state/sidebar">
-<pre>yes</pre>
+<div created="20170822165749745" modified="20170828124443101" title="$:/state/sidebar">
+<pre>no</pre>
 </div>
 <div created="20170822165605041" modified="20170822165605041" title="$:/state/tab--86143343">
 <pre>$:/core/ui/ControlPanel/Plugins/Installed/Themes</pre>
@@ -8554,7 +8562,7 @@ Error message and password prompt
 <div created="20170822165353275" modified="20170822170907684" title="$:/state/tab/sidebar--1835078512">
 <pre>$:/core/ui/SideBar/Open</pre>
 </div>
-<div list="[[eBug2014 Swarm]] [[Reports and Papers]]" title="$:/StoryList">
+<div list="[[eBug2014 Swarm]] [[Assembly Procedure]] [[Reports and Papers]] Repositories" title="$:/StoryList">
 <pre></pre>
 </div>
 <div plugin-type="info" title="$:/temp/info-plugin" type="application/json">
@@ -9175,15 +9183,46 @@ This plugin also requires the JSZip plugin ([[$:/plugins/tiddlywiki/jszip]]) to 
     }
 }</pre>
 </div>
+<div created="20170828095155447" modified="20170828125845554" title="Assembly Procedure">
+<pre># Attach bump switches to the base
+# Apply graphite dust under the bumper
+# Place the bumper
+# Place the bumper holders
+# Place the bottom part that will hold the castor wheels (we will need superglue to hold it in place)
+# Replace the motors in the gearboxes with the dual shaft motors. 
+# Attach the gearboxes to the chassis (*do not* attach the red wheels yet, otherwise you can't access the screws)
+# Solder the wires to the motors. 
+#  ''check'' when do we wire up the bumper switches? 
+# Fit the U shaped pillars and screw (''check'' we need to insert the spacers) them to the circular eBug2014 board.
+# Attach the main board to the base.
+# Insert the magnet holders (@@do not insert the magnets!@@ we need to calibrate the comparators first) to motor shafts.
+# Attach the LCD display.
+# We need to calibrate the current measurement circuit (needs to be done with no battery attached)
+# Attach the red wheels...(''check'')
+# Calibrate the hall effect sensor comparators.
+# Insert the magnets into position.</pre>
+</div>
 <div created="20170822165335840" modified="20170822170018501" tags="camera" title="Blob Camera">
 <pre>! Blob Camera
 !! Blob Camera
 Documentation coming</pre>
 </div>
-<div created="20170822165120749" modified="20170823151530474" tags="" title="eBug2014 Swarm">
-<pre>* [[Localization System]], [[Blob Camera]]
-* [[Reports and Papers]]
+<div created="20170823153309694" modified="20170828100707788" title="Communication Network">
+<pre>* [[Packet Formats]]
+* [[Nordic chip|http://www.nordicsemi.com/eng/Products/2.4GHz-RF/nRF24L01P]]
+* A good C++ library is [[here|http://tmrh20.github.io/RF24/index.html]] (TonyGrubman ported it to the PSoC for the eBug)</pre>
+</div>
+<div created="20170822165120749" modified="20170828123910315" tags="" title="eBug2014 Swarm">
+<pre>* [[Mechanical Design]], [[Communication Network]], [[Localization System]], [[Blob Camera]]
+* [[Repositories]], [[Reports and Papers]]
+* eBug2014 [[Assembly Procedure]]
+* [[Interesting Applications]]
 </pre>
+</div>
+<div created="20170828100015633" modified="20170828100210636" title="Interesting Applications">
+<pre>*    [[Robot Swarm at Museum of Mathematics|http://www.nytimes.com/2014/12/02/science/a-robot-exhibit-at-momath-aims-to-bring-math-to-life.html?_r=1]]  ([[video|https://www.youtube.com/watch?feature=player_embedded&amp;v=xD2m0d5PXX4 ]])
+* [[Human Control of Swarms from Game Data|http://www.swarmcontrol.net/]]
+* USC ACTLab: http://act.usc.edu/ Crazyflie swarms etc. </pre>
 </div>
 <div created="20170822165318363" modified="20170822165323497" title="Localization System">
 <pre>documentation coming</pre>
@@ -9194,6 +9233,23 @@ Documentation coming</pre>
 * M. Boys [ext[Distributed Control of Robotic Swarms|matthew-final-report-2015.pdf]], 2015.
 !! Papers
 * T. Grubman, Y. A. Sekercioglu, and D. Wood, [[Partitioning de Bruijn Graphs Into k-cycles for Robot Identification and Tracking|http://titania.ctie.monash.edu.au/papers/de_bruijn_cycles.pdf]], Discrete Applied Mathematics, 2016.</pre>
+</div>
+<div created="20170828122416006" modified="20170828124103707" title="Repositories">
+<pre>!! Firmware
+* `https://github.com/monash-wsrn/ebug2014-firmware`
+* `https://github.com/monash-wsrn/psoc-camera-firmware`
+* `https://github.com/monash-wsrn/nrf-bridge`
+!! QT Based Multithreaded Control Software
+* Wireless Multicamera Control System and Swarm Simulator: `https://gitlab.com/wsrnlab/ebug2014-system`
+(We are now moving to a ROS based control system)
+
+!! Electronics
+* eBug2014 main board: `https://github.com/monash-wsrn/ebug2014-pcb`
+* eBug2014 camera array board: `https://github.com/monash-wsrn/ebug2014-camera-array-pcb`
+* eBug2014 dual camera expansion board: `ebug2014-dual-camera-board`
+!! Mechanical Design
+* `https://github.com/monash-wsrn/ebug2014-chassis` ([ext[Matthew's change log|mboys-chassis-changelog.pdf]])
+</pre>
 </div>
 
 </div>
