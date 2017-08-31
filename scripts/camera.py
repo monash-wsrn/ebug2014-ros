@@ -2,14 +2,18 @@
 
 from __future__ import division
 from __future__ import absolute_import
-#import settings
-#from libraries.nrf import Bridge
-from nrf import Bridge
+
+import sys
 import numpy as np
 import cv2
 import math
 import time
+#import settings
 from itertools import izip
+
+sys.path.insert(0, '../libs/') 
+
+from nrf import Bridge
 
 class thresholds(object):
     values = [0x79, 0x9a, 0xb1, 0x5a, 0xc6, 0x70, 0xa3, 0x82]
@@ -24,8 +28,8 @@ class thresholds(object):
             nrf.set_camera_thresholds(thresholds.values)
         except RuntimeError, e:  # ACK not received, set trackbar back to original value
             thresholds.values[self.i] = old
-            cv2.setTrackbarPos([u'Red', u'Green', u'Blue', u'Magenta'][self.i / 2] + u' ' + [u'U', u'V'][self.i % 2], u'Blob camera', old)
-# class thresholds
+            cv2.setTrackbarPos([u'Red', u'Green', u'Blue', u'Magenta'][self.i / 2] + u' ' + [u'U', u'V'][self.i % 2], u'Blob Camera', old)
+# end class thresholds
 
 nrf = Bridge(u'/dev/ttyACM0')  # '/dev/ttyACM0'
 a = nrf.assign_addresses()
@@ -40,16 +44,16 @@ else:
 
 # nrf.send_packet('\x94'+chr(64)) #overclock PSoC and camera (default is 48MHz, which gives 15fps SXGA, 30fps VGA, 60fps CIF and 120fps QCIF)
 
-cv2.namedWindow(u'Blob camera')
+cv2.namedWindow(u'Blob Camera')
 i = 0
 for colour in [u'Red', u'Green', u'Blue', u'Magenta']:
     for channel in [u'U', u'V']:
-        cv2.createTrackbar(colour + u' ' + channel, u'Blob camera', thresholds.values[i], 255, thresholds(i))
+        cv2.createTrackbar(colour + u' ' + channel, u'Blob Camera', thresholds.values[i], 255, thresholds(i))
         i += 1
-cv2.createTrackbar(u'Exposure',u'Blob camera',40,480,lambda x:nrf.set_camera_exposure(x)) #exposure in image rows (max is height of image)
-cv2.createTrackbar(u'Analogue gain',u'Blob camera',0,255,lambda x:nrf.set_camera_gain(x)) #analogue gain (best to keep at 0 and adjust exposure)
-cv2.createTrackbar(u'Blue gain',u'Blob camera',128,255,lambda x:nrf.set_camera_blue_gain(x)) #white balance: gain adjustment for blue channel
-cv2.createTrackbar(u'Red gain',u'Blob camera',128,255,lambda x:nrf.set_camera_red_gain(x)) #white balance: gain adjustment for red channel
+cv2.createTrackbar(u'Exposure',u'Blob Camera',40,480,lambda x:nrf.set_camera_exposure(x)) #exposure in image rows (max is height of image)
+cv2.createTrackbar(u'Analogue gain',u'Blob Camera',0,255,lambda x:nrf.set_camera_gain(x)) #analogue gain (best to keep at 0 and adjust exposure)
+cv2.createTrackbar(u'Blue gain',u'Blob Camera',128,255,lambda x:nrf.set_camera_blue_gain(x)) #white balance: gain adjustment for blue channel
+cv2.createTrackbar(u'Red gain',u'Blob Camera',128,255,lambda x:nrf.set_camera_red_gain(x)) #white balance: gain adjustment for red channel
 nrf.camera_write_reg(0x13,0) #disable AEC, AGC, and AWB
 
 ts = 0
@@ -73,7 +77,7 @@ while True:
             fps_local = len(frame_times) / (new_time[1] - old_time[1])
             cv2.putText(img, u'%03.0f' % fps_camera, (0, 20), cv2.FONT_HERSHEY_PLAIN, 1, (128, 128, 0), 1, cv2.LINE_AA)
             cv2.putText(img, u'%03.0f' % fps_local, (0, 50), cv2.FONT_HERSHEY_PLAIN, 1, (128, 128, 0), 1, cv2.LINE_AA)
-            cv2.imshow(u'Blob camera', img)
+            cv2.imshow(u'Blob Camera', img)
             frame_done = True
             frame_blobs = []
 

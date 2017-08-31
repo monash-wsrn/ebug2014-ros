@@ -1,6 +1,9 @@
 #!/usr/bin/python
 
 import sys
+
+sys.path.insert(0, '../libs/') 
+
 from nrf import Bridge
 
 if len(sys.argv) == 2:
@@ -14,7 +17,7 @@ else:
 
     
 nrf = Bridge()
-cameras, ebugs, unknowns = nrf.assign_static_addresses('ebug_tab.json')
+cameras, ebugs, unknowns = nrf.assign_static_addresses('../libs/ebug_tab.json')
 
 for addr, info in ebugs.items():
     print 'Initializing eBug: ', addr
@@ -33,7 +36,7 @@ for addr, info in ebugs.items():
         green = info['led_sequence'][1]
         blue = info['led_sequence'][2]
         nrf.set_LEDs(int(red, 16), int(green, 16), int(blue, 16))
-print 'Initialized', len(ebugs), 'eBugs'
+print 'Initialized', len(ebugs), 'eBug(s)'
 
 
 
