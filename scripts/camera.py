@@ -42,7 +42,9 @@ for i in list(a.keys()):
 else:
     raise RuntimeError(u'No cameras found')
 
-# nrf.send_packet('\x94'+chr(64)) #overclock PSoC and camera (default is 48MHz, which gives 15fps SXGA, 30fps VGA, 60fps CIF and 120fps QCIF)
+# overclock PSoC and camera (default is 48MHz, which gives 15fps SXGA,
+# 30fps VGA, 60fps CIF and 120fps QCIF)
+# nrf.send_packet('\x94'+chr(64)) 
 
 cv2.namedWindow(u'Blob Camera')
 i = 0

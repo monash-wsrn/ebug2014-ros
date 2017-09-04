@@ -11,8 +11,7 @@ u'''
 from __future__ import with_statement
 from __future__ import division
 from __future__ import absolute_import
-import settings
-from libraries.nrf import Bridge
+#import settings
 import time
 import sys
 import threading
@@ -20,10 +19,14 @@ from multiprocessing import Process
 import Tkinter
 from io import open
 
+sys.path.insert(0, '../libs/') 
+
+from nrf import Bridge
+
 nrf = Bridge()
 
 while True:
-    camera, eBugs, unknown = nrf.assign_static_addresses(path=u'../libraries/eBugs_pairing_list.json')
+    camera, eBugs, unknown = nrf.assign_static_addresses(path=u'../libs/ebug_tab.json')
     if camera:
         break
     else:
@@ -35,9 +38,11 @@ while True:
 nrf.set_TX_address(iter(camera).next())
 
 #settings camera
-nrf.camera_write_reg(0x10, 20)
-values = [0x79, 0x9a, 0xb1, 0x5a, 0xc6, 0x70, 0xa3, 0x82]
-nrf.set_camera_thresholds(values)
+# Do not play with the settings, we will fix them with camera.py
+# So commenting them out. 
+# nrf.camera_write_reg(0x10, 20)
+# values = [0x79, 0x9a, 0xb1, 0x5a, 0xc6, 0x70, 0xa3, 0x82]
+# nrf.set_camera_thresholds(values)
 
 def stat(maxINT):
     u'''
@@ -204,8 +209,8 @@ def log_blobs(MAX_TIME, log_file):
                     frame.extend(blob[1])
                 camera_time = blob[0]
                 time_2 = time.time()
-                RTT = time_2 - time_1 #depends of the size of the blob
-                log_blobs.write(u"UNIX : %f ms, RTT : %f, Camera Timestamp : %d ms, Blob info : %s\n" % ((time_2 - time_0) * 1000, RTT, camera_time - camera_time_0, unicode(blob[1])) )
+                RTT = time_2 - time_1 #depends on the size of the blob
+                log_blobs.write(u"UNIX : %f ms, RTT : %f, Camera Timestamp (rel) : %d ms, Camera Timestamp : %d ms, Blob info : %s\n" % ((time_2 - time_0) * 1000, RTT, camera_time - camera_time_0, camera_time, unicode(blob[1])) )
             except KeyboardInterrupt:
                 break
 

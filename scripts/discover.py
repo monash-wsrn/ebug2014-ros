@@ -9,6 +9,7 @@ from nrf import Bridge
 if len(sys.argv) == 2:
     if sys.argv[1] == '-c':
         camera_calibration = True
+        print 'Entered camera calibration mode.'
     else:
         print 'Usage:', sys.argv[0], '[-c]' # for turning on the calibration LED patterns
         sys.exit(1)
@@ -22,8 +23,9 @@ cameras, ebugs, unknowns = nrf.assign_static_addresses('../libs/ebug_tab.json')
 for addr, info in ebugs.items():
     print 'Initializing eBug: ', addr
     nrf.set_TX_address(addr)
-    nrf.enable_LEDs(0,1,1,1)
+    nrf.enable_LEDs(0, 1, 0, 0) 
     nrf.LED_brightness(4)
+    nrf.LCD_backlight(0)
     if camera_calibration == True:
         # Calibration LED pattern (upward looking set):
         # D2 is illuminated green (0 degrees)
