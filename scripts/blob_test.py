@@ -1,13 +1,3 @@
-u'''
-(last updated 26 May 2017 by Ahmet)
-0- blob-test.py must be in the same file as nrf.py
-0 bis - install tkinter with the command : apt-get install python3-tk
-1- From a terminal, go to blob-test.py directory and lauch ipython or python3
-2- import blob_test
-3- launch the function you want
-4- if you want an impressive view of the eBugs launch log_blobs(seconds, file) and then display()
-'''
-
 from __future__ import with_statement
 from __future__ import division
 from __future__ import absolute_import
@@ -16,7 +6,6 @@ import time
 import sys
 import threading
 from multiprocessing import Process
-import Tkinter
 from io import open
 
 sys.path.insert(0, '../libs/') 
@@ -26,7 +15,8 @@ from nrf import Bridge
 nrf = Bridge()
 
 while True:
-    camera, eBugs, unknown = nrf.assign_static_addresses(path=u'../libs/ebug_tab.json')
+    camera, eBugs, unknown = nrf.assign_static_addresses(path = \
+                                                     u'../libs/ebug_tab.json')
     if camera:
         break
     else:
@@ -74,7 +64,10 @@ def stat(maxINT):
             mini = value
     mean /= len(array) 
 
-    print u"\nMini : %f ms, Maxi : %f ms, Mean : %f ms, Fail number : %d, Fail rate : %f %%\n" % (mini, maxi, mean, fail_number, fail_number/maxINT*100)
+    print u"\nMini : %f ms, Maxi : %f ms, Mean : %f ms, Fail number : %d, \
+            Fail rate : %f %%\n" % (mini, maxi, mean, fail_number, \
+                                         fail_number/maxINT*100)
+# end stat()
 
 def record(seconds, file):
     u'''
@@ -90,9 +83,9 @@ def record(seconds, file):
                 blob = nrf.get_blobs()
                 saving_file.write(unicode(blob)+u'\n')
             except:
-                saving_file.write(u'-------------------------Blob Error--------------------------\n')
+                saving_file.write(u'--> Blob error\n')
             end = time.time()
-   
+# end record()
 
 # Tests with timer and multiprocessing     
 def get_single_frame(first_blob = None):
@@ -119,21 +112,22 @@ def get_single_frame(first_blob = None):
     if first_blob and first_blob[0] == timestamp:
         frame.append(first_blob[1])
     return (timestamp, frame), last_blob
-
+# end get_single_frame()
 
 def write_in_file(file, frame):
     with open(file,u'a+') as saving_file: 
         saving_file.write(unicode(frame) + u'\n')
-
+# end write_in_file()
 
 def blob_timer():
     time.sleep(1)
+# end blob_timer()
 
 def frame_treatment(frame):
     if frame[1]:
         #write_in_file('test.txt',time.time())
         write_in_file(u'test.txt', frame[0])
-
+# end frame_treatment()
 
 def get_frames():
     next_blob = None
@@ -148,21 +142,23 @@ def get_frames():
                 print u'frame was full'
         except KeyboardInterrupt:
             break
-### End test with timer and multiprocessing
+# End test with timer and multiprocessing
 
 FRAMES = list()
 
-def log_blobs(MAX_TIME, log_file):
+def log_blobs(MAX_TIME, log_file_name):
     u'''
     @params int MAX_TIME, string log_file
-    write in the @log_file file located in the folder /scripts/logs information about blobs
-    warninig : the logs folder must exist  
+    write in the @log_file file located in the folder /scripts/logs 
+    information about blobs
+    warning : the logs folder must exist  
     '''
-    with open(u'logs/' + log_file, u'w+') as log_blobs:
+    with open(u'logs/' + log_file_name, u'w+') as log_file:
         frame = []
         i = 0
-        #discard buffer by calling get_blobs() for a few sedconds
-        #the first blob recorded in the file can correspond to the middle of a frame, ie first frame may be uncomplete
+        # discard buffer by calling get_blobs() for a few seconds
+        # the first blob recorded in the file can correspond to the
+        # middle of a frame, ie first frame may be uncomplete
         while i < 3000:
             try:
                 blob = nrf.get_blobs()
@@ -172,7 +168,7 @@ def log_blobs(MAX_TIME, log_file):
 
         frame_number = 1
 
-        print u"Start log"
+        print u'Started logging.'
 
         while True:
             time_0 = time.time()
@@ -184,10 +180,10 @@ def log_blobs(MAX_TIME, log_file):
             break
 
         frame.extend(blob[1])
-        RTT = time_1 - time_0 #depends of the size of the blob
+        RTT = time_1 - time_0 # depends of the size of the blob
         camera_time_0 = camera_time = blob[0]
 
-        log_blobs.write(u"UNIX : %f ms, RTT : %f, Camera Timestamp : %d ms, Blob info : %s\n" % ((time_1 - time_0) * 1000, RTT, camera_time - camera_time_0, unicode(blob[1])) )
+        log_file.write(u"unix: %f ms, RTT: %f, cam_tstamp : %d ms, blob_info : %s\n" % ((time_1 - time_0) * 1000, RTT, camera_time - camera_time_0, unicode(blob[1])))
 
         while time_1 - time_0 < MAX_TIME:
             try:
@@ -197,10 +193,11 @@ def log_blobs(MAX_TIME, log_file):
                 except RuntimeError, error:
                     ex_type, ex, tb = sys.exc_info()
                     traceback.print_tb(tb)
-                    log_blobs.write(u"RunTime Error : %s\n" % error)
+                    log_file.write(u"RunTime Error : %s\n" % error)
                     continue
                 if camera_time != blob[0]:
-                    log_blobs.write(u"FRAME #%d : %s\n" % (frame_number, unicode(frame)))
+                    log_file.write(u"frame# %d %d %s\n" % \
+                                    (frame_number, camera_time, unicode(frame)))
                     frame_number += 1
                     if frame:
                         FRAMES.append(frame)
@@ -209,43 +206,13 @@ def log_blobs(MAX_TIME, log_file):
                     frame.extend(blob[1])
                 camera_time = blob[0]
                 time_2 = time.time()
-                RTT = time_2 - time_1 #depends on the size of the blob
-                log_blobs.write(u"UNIX : %f ms, RTT : %f, Camera Timestamp (rel) : %d ms, Camera Timestamp : %d ms, Blob info : %s\n" % ((time_2 - time_0) * 1000, RTT, camera_time - camera_time_0, camera_time, unicode(blob[1])) )
+                RTT = time_2 - time_1 # depends on the size of the blob
+                log_file.write(u"unix: %f ms, RTT: %f, cam_tstamp (rel) : %d ms, cam_tstamp : %d ms, blob_info : %s\n" % ((time_2 - time_0) * 1000, RTT, camera_time - camera_time_0, camera_time, unicode(blob[1])))
             except KeyboardInterrupt:
                 break
+            # end try
+        # end while
+    print 'Finished logging.'     
+    # end with
+# end log_blobs()
 
-
-master = Tkinter.Tk()
-w = Tkinter.Canvas(master, width = 750, height = 750)
-
-def _create_circle(self, x, y, r, **kwargs):
-    return self.create_oval(x-r, y-r, x+r, y+r, **kwargs)
-Tkinter.Canvas.create_circle = _create_circle
-
-def print_frame(event):
-    frame = FRAMES.pop()
-    for dot in frame:
-        color = u"red" if dot[2] == 0 else u"green" if dot[2] == 1 else u"blue" 
-        w.create_circle(dot[0]*750/1000, dot[1]*750/1000, dot[3], fill = color) 
-
-def display():
-        w.pack()
-        w.bind(u'<Button-1>', print_frame)
-        w.config(bg = u'white', borderwidth = 1)
-
-        message = Tkinter.Label(master, text = u"Click on your left mouse button to see the next frame !")
-        message.pack(side=Tkinter.BOTTOM)
-
-        Tkinter.mainloop()
-
-
-def camera_settings_test():
-    ID = 0
-    for address, info in eBugs.items():
-        nrf.set_TX_address(address)
-        nrf.LCD_backlight(0)
-        nrf.enable_LEDs(0,1,0,0)
-        nrf.LED_brightness(5)
-        LED_set = [u"0x0e07", u"0x7038", u"0x81c0"]
-        nrf.set_LEDs(*LED_set)
-        ID += 1
