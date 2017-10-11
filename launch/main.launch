@@ -1,0 +1,30 @@
+<launch>
+  <node
+      pkg = "ebug_swarm_planning"
+      type = "planning_node"
+      name = "Planning_Node"
+      launch-prefix = "xterm -e"
+      required = "true">
+    </node>
+      <node
+      pkg = "ebug_swarm_control"
+      type = "control_node"
+      name = "Control_Node"
+      launch-prefix = "xterm -e"
+      required = "true">
+    </node>
+      <node
+      pkg = "ebug_swarm_localization"
+      type = "localization_node"
+      name = "Localization_Node"
+      launch-prefix = "xterm -e"
+      required = "true">
+    </node>
+      <node
+      pkg = "ebug_swarm_visualization"
+      type = "visualization_node"
+      name = "Visualization_Node"
+      launch-prefix = "xterm -e"
+      required = "true">
+    </node>
+</launch>

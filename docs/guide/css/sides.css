@@ -1,0 +1,11 @@
+.sides .figure {
+    display: inline;
+}
+
+.sides .figure p {
+    display: inline;
+}
+
+.sides .figure img {
+    vertical-align: middle;
+}

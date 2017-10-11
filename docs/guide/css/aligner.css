@@ -1,0 +1,11 @@
+.sponsors .figure {
+    display: inline;
+}
+
+.sponsors .figure p {
+    display: inline;
+}
+
+.sponsors .figure img {
+    vertical-align: middle;
+}

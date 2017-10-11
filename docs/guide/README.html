@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Ahmet's Robots</title>
+<!-- 2017-10-11 mer 23:24 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Nicola Roberto Zema" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="css/suse_todo.css" />
+<link rel="stylesheet" type="text/css" href="css/aligner.css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Ahmet's Robots</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. <code>ebug_swarm_control</code></a>
+<ul>
+<li><a href="#sec-1-1">1.1. Instructions</a></li>
+<li><a href="#sec-1-2">1.2. Mail</a></li>
+<li><a href="#sec-1-3">1.3. Attached Material</a></li>
+<li><a href="#sec-1-4">1.4. <span class="done DONE">DONE</span> Action Plan</a></li>
+<li><a href="#sec-1-5">1.5. <span class="todo TODO">TODO</span> Follow-up <code>[0/2]</code></a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2. Image Comparison</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> <code>ebug_swarm_control</code></h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> Instructions</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+Just drop the <code>ebug_swarm_control</code> folder into
+<code>/home/&lt;username&gt;/catkin_ws/src</code> and issue a <code>catkin_make</code> as per
+manuals/tutorials.
+</p>
+
+<p>
+I have made also a launch file.
+</p>
+
+<p>
+Jeez!
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> Mail</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+Original mail from the man.
+</p>
+<pre class="example">
+   Hi Nicola,
+   
+   Can we build a ROS structure consisting of the following blocks:
+
+1. control_node
+2. localization_node
+3. planning_node
+4. visualization_node
+   
+They will basically do nothing but exchange information through the
+ROS provided (blue marked in the attached diagram) mechanisms (I
+forgot the name of this whiteboard?).
+
+If you can write a simple program in the planning_node that will
+generate an initial position x,y 0 &lt; x &lt; 640 and 0 &lt; y &lt; 480 (blob
+camera resolution).
+
+control_node will read it and write it for localization_node to read.
+
+Then the localization_node will read and write it for
+visualization_node and planning_node to read.
+
+visualization_node will have an openCV code to display a circle in a
+rectangular window representing the current position of the "robot" as
+a simple circle.
+
+planning_node will read the position and generate a next position to
+model a random walk of the robot. This cycle will keep going
+indefinitely.
+
+I think this will be a good starting point for us.
+</pre>
+</div>
+</div>
+
+
+<div id="outline-container-sec-1-3" class="outline-3">
+<h3 id="sec-1-3"><span class="section-number-3">1.3</span> Attached Material</h3>
+<div class="outline-text-3" id="text-1-3">
+
+<div id="fig:ahmetPlan" class="figure">
+<p><img src="./material/oldScreenshot.png" alt="oldScreenshot.png" />
+</p>
+<p><span class="figure-number">Figure 1:</span> Original Ahmet Idea</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-1-4" class="outline-3">
+<h3 id="sec-1-4"><span class="section-number-3">1.4</span> <span class="done DONE">DONE</span> Action Plan</h3>
+<div class="outline-text-3" id="text-1-4">
+</div><ol class="org-ol"><li><a id="sec-1-4-1" name="sec-1-4-1"></a><span class="done DONE">DONE</span> Create nodes<br  /><div class="outline-text-4" id="text-1-4-1">
+</div>
+</li>
+
+<li><a id="sec-1-4-2" name="sec-1-4-2"></a><span class="done DONE">DONE</span> Setup makefiles and xml<br  /><div class="outline-text-4" id="text-1-4-2">
+</div>
+</li>
+
+<li><a id="sec-1-4-3" name="sec-1-4-3"></a><span class="done DONE">DONE</span> <code>planning_node</code><br  /><div class="outline-text-4" id="text-1-4-3">
+<pre class="example">
+the planning_node that will
+generate an initial position x,y 0 &lt; x &lt; 640 and 0 &lt; y &lt; 480 (blob
+camera resolution).
+</pre>
+</div>
+<ol class="org-ol"><li><a id="sec-1-4-3-1" name="sec-1-4-3-1"></a><span class="done DONE">DONE</span> basic data generation<br  /><div class="outline-text-5" id="text-1-4-3-1">
+<ul class="org-ul">
+<li>It is an image <code>640x480</code>;
+</li>
+<li>It is a <code>sensor_msgs/Image Message</code>
+</li>
+<li>File: <code>sensor_msgs/Image.msg</code>
+</li>
+<li>Things to take into consideration:
+</li>
+<li>Header header (see <a href="#sec-1-4-3-1-2">1.4.3.1.2</a>)
+<ul class="org-ul">
+<li>WTF?!?!
+</li>
+</ul>
+</li>
+<li><code>uint32 height         # image height, that is, number of rows</code>
+<ul class="org-ul">
+<li>Can Fake it
+</li>
+</ul>
+</li>
+<li><code>uint32 width          # image width, that is, number of columns</code>
+<ul class="org-ul">
+<li>Can Fake it
+</li>
+</ul>
+</li>
+<li><code>string encoding       # Encoding of pixels -- channel meaning, ordering, size</code>
+<ul class="org-ul">
+<li>Can Fake it
+</li>
+</ul>
+</li>
+<li><code>uint8 is_bigendian    # is this data bigendian?</code>
+<ul class="org-ul">
+<li>Can Fake
+</li>
+</ul>
+</li>
+<li><code>uint32 step           # Full row length in bytes</code>
+<ul class="org-ul">
+<li>Can Fake
+</li>
+</ul>
+</li>
+<li><code>uint8[] data          # actual matrix data, size is (step * rows)</code>
+<ul class="org-ul">
+<li>Can Fake:
+<ul class="org-ul">
+<li>Fill it with 1s
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><b>ROS TAKES CARE OF ALL DEFAULTS</b>
+</li>
+</ul>
+</div>
+<ol class="org-ol"><li><a id="sec-1-4-3-1-1" name="sec-1-4-3-1-1"></a>How to handle it<br  /><div class="outline-text-6" id="text-1-4-3-1-1">
+<p>
+Send it as a message on a dedicated topic.
+</p>
+</div>
+</li>
+<li><a id="sec-1-4-3-1-2" name="sec-1-4-3-1-2"></a>Info<br  /><div class="outline-text-6" id="text-1-4-3-1-2">
+<pre class="example">
+# This message contains an uncompressed image
+# (0, 0) is at top-left corner of image
+#
+
+Header header        # Header timestamp should be acquisition time of image
+                     # Header frame_id should be optical frame of camera
+                     # origin of frame should be optical center of cameara
+                     # +x should point to the right in the image
+                     # +y should point down in the image
+                     # +z should point into to plane of the image
+                     # If the frame_id here and the frame_id of the CameraInfo
+                     # message associated with the image conflict
+                     # the behavior is undefined
+
+uint32 height         # image height, that is, number of rows
+uint32 width          # image width, that is, number of columns
+
+# The legal values for encoding are in file src/image_encodings.cpp
+# If you want to standardize a new string format, join
+# ros-users@lists.sourceforge.net and send an email proposing a new encoding.
+
+string encoding       # Encoding of pixels -- channel meaning, ordering, size
+                      # taken from the list of strings in include/sensor_msgs/image_encodings.h
+
+uint8 is_bigendian    # is this data bigendian?
+uint32 step           # Full row length in bytes
+uint8[] data          # actual matrix data, size is (step * rows)
+</pre>
+</div>
+</li></ol>
+</li></ol>
+</li>
+<li><a id="sec-1-4-4" name="sec-1-4-4"></a><span class="done DONE">DONE</span> <code>control_node</code><br  /><div class="outline-text-4" id="text-1-4-4">
+<pre class="example">
+control_node will read it and write it for localization_node to read.
+</pre>
+</div>
+<ol class="org-ol"><li><a id="sec-1-4-4-1" name="sec-1-4-4-1"></a><span class="done DONE">DONE</span> Message Transport<br  /><div class="outline-text-5" id="text-1-4-4-1">
+<ul class="org-ul">
+<li>Read the image from <a href="#sec-1-4-3">1.4.3</a>
+</li>
+<li>Rebroadcast it.
+</li>
+</ul>
+</div>
+</li></ol>
+</li>
+<li><a id="sec-1-4-5" name="sec-1-4-5"></a><span class="done DONE">DONE</span> <code>localization_node</code><br  /><div class="outline-text-4" id="text-1-4-5">
+<pre class="example">
+the localization_node will read and write it for
+visualization_node and planning_node to read.
+</pre>
+</div>
+<ol class="org-ol"><li><a id="sec-1-4-5-1" name="sec-1-4-5-1"></a><span class="done DONE">DONE</span> Message Transport<br  /><div class="outline-text-5" id="text-1-4-5-1">
+<p>
+Same as <a href="#sec-1-4-4">1.4.4</a>
+</p>
+</div>
+</li></ol>
+</li>
+<li><a id="sec-1-4-6" name="sec-1-4-6"></a><span class="done DONE">DONE</span> <code>visualization_node</code><br  /><div class="outline-text-4" id="text-1-4-6">
+<pre class="example">
+visualization_node will have an openCV code to display a circle in a
+rectangular window representing the current position of the "robot" as
+a simple circle.
+</pre>
+</div>
+<ol class="org-ol"><li><a id="sec-1-4-6-1" name="sec-1-4-6-1"></a><span class="done DONE">DONE</span> Data Endpoint<br  /><div class="outline-text-5" id="text-1-4-6-1">
+<p>
+Just print out some stuff.
+</p>
+</div>
+</li></ol>
+</li></ol>
+</div>
+
+<div id="outline-container-sec-1-5" class="outline-3">
+<h3 id="sec-1-5"><span class="section-number-3">1.5</span> <span class="todo TODO">TODO</span> Follow-up <code>[0/2]</code></h3>
+<div class="outline-text-3" id="text-1-5">
+<ul class="org-ul">
+<li><code>[&#xa0;]</code> set proper names on the topics <code>[0/4]</code>
+<dl class="org-dl">
+<dt> <code>[&#xa0;]</code> blobs </dt><dd>control -&gt; localization
+</dd>
+<dt> <code>[&#xa0;]</code> poses </dt><dd>localization -&gt; planning
+</dd>
+<dt> <code>[&#xa0;]</code> commands </dt><dd>planning -&gt; control
+</dd>
+<dt> <code>[&#xa0;]</code> trajectories </dt><dd>traj-calc -&gt; planning
+</dd>
+</dl>
+</li>
+<li><code>[&#xa0;]</code> each node as a separate package as in Figure <a href="#fig:newnodestructure">2</a> <code>[0/4]</code>
+<ul class="org-ul">
+<li><code>[&#xa0;]</code> control
+</li>
+<li><code>[&#xa0;]</code> localization
+</li>
+<li><code>[&#xa0;]</code> planning
+</li>
+<li><code>[&#xa0;]</code> traj-calc
+</li>
+</ul>
+</li>
+</ul>
+
+<div id="fig:newnodestructure" class="figure">
+<p><img src="./material/newnodes.png" alt="newnodes.png" />
+</p>
+<p><span class="figure-number">Figure 2:</span> Ahmet's New Node Structure</p>
+</div>
+
+
+<div id="fig:updatednodestructure" class="figure">
+<p><a href="material/ros-architecture.png"><img src="file:///home/zeman/workspace/ebug2014-ros/docs/guide/material/ros-architecture.png" alt="ros-architecture.png" /></a>
+</p>
+<p><span class="figure-number">Figure 3:</span> Ahmet's Updated Node Structure</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2 sponsors">
+<h2 id="sec-2"><span class="section-number-2">2</span> Image Comparison</h2>
+<div class="outline-text-2" id="text-2">
+
+<div class="figure">
+<p><img src="./material/newnodes.png" alt="newnodes.png" height="500px" />
+</p>
+</div>
+
+<div class="figure">
+<p><img src="./material/oldScreenshot.png" alt="oldScreenshot.png" height="500xp" />
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Date: <span class="timestamp-wrapper"><span class="timestamp">&lt;2017-09-06 mer&gt;</span></span></p>
+<p class="author">Author: Nicola Roberto Zema</p>
+<p class="date">Created: 2017-10-11 mer 23:24</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
