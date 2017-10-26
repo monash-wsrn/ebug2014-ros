@@ -122,178 +122,88 @@
 
    Jeez!
 
-** Mail
-Original mail from the man.
-#+begin_example
-   Hi Nicola,
-   
-   Can we build a ROS structure consisting of the following blocks:
 
-1. control_node
-2. localization_node
-3. planning_node
-4. visualization_node
-   
-They will basically do nothing but exchange information through the
-ROS provided (blue marked in the attached diagram) mechanisms (I
-forgot the name of this whiteboard?).
-
-If you can write a simple program in the planning_node that will
-generate an initial position x,y 0 < x < 640 and 0 < y < 480 (blob
-camera resolution).
-
-control_node will read it and write it for localization_node to read.
-
-Then the localization_node will read and write it for
-visualization_node and planning_node to read.
-
-visualization_node will have an openCV code to display a circle in a
-rectangular window representing the current position of the "robot" as
-a simple circle.
-
-planning_node will read the position and generate a next position to
-model a random walk of the robot. This cycle will keep going
-indefinitely.
-
-I think this will be a good starting point for us.
-#+end_example
-
-
-** Attached Material
-
-   #+CAPTION: Original Ahmet Idea
-   #+LABEL: fig:ahmetPlan
-   #+ATTR_HTML: style="display:inline;margin:10px;"
-   [[file:./material/oldScreenshot.png]]
-   # file:./material/eBugSwarm.pdf
-
-
-   # [[./material/eBug Swarm.pdf][]]
-
-** DONE Action Plan
-
-*** DONE Create nodes
-    CLOSED: [2017-09-18 lun 01:02]
-
-*** DONE Setup makefiles and xml
-    CLOSED: [2017-09-18 lun 01:02]
-
-*** DONE =planning_node=
-    CLOSED: [2017-09-18 lun 02:10]
-#+BEGIN_EXAMPLE
-the planning_node that will
-generate an initial position x,y 0 < x < 640 and 0 < y < 480 (blob
-camera resolution).
-#+END_EXAMPLE
-**** DONE basic data generation
-     CLOSED: [2017-09-18 lun 02:10]
-     - It is an image ~640x480~;
-     - It is a =sensor_msgs/Image Message=
-     - File: =sensor_msgs/Image.msg=
-     - Things to take into consideration:
-     - Header header (see [[Info]])
-       - WTF?!?!
-     - ~uint32 height         # image height, that is, number of rows~
-       - Can Fake it
-     - ~uint32 width          # image width, that is, number of columns~
-       - Can Fake it
-     - ~string encoding       # Encoding of pixels -- channel meaning, ordering, size~
-       - Can Fake it
-     - ~uint8 is_bigendian    # is this data bigendian?~
-       - Can Fake
-     - ~uint32 step           # Full row length in bytes~
-       - Can Fake
-     - ~uint8[] data          # actual matrix data, size is (step * rows)~
-       - Can Fake:
-	 - Fill it with 1s
-     - *ROS TAKES CARE OF ALL DEFAULTS*
-***** How to handle it 
-      Send it as a message on a dedicated topic.
-***** Info
-#+BEGIN_EXAMPLE
-# This message contains an uncompressed image
-# (0, 0) is at top-left corner of image
-#
-
-Header header        # Header timestamp should be acquisition time of image
-                     # Header frame_id should be optical frame of camera
-                     # origin of frame should be optical center of cameara
-                     # +x should point to the right in the image
-                     # +y should point down in the image
-                     # +z should point into to plane of the image
-                     # If the frame_id here and the frame_id of the CameraInfo
-                     # message associated with the image conflict
-                     # the behavior is undefined
-
-uint32 height         # image height, that is, number of rows
-uint32 width          # image width, that is, number of columns
-
-# The legal values for encoding are in file src/image_encodings.cpp
-# If you want to standardize a new string format, join
-# ros-users@lists.sourceforge.net and send an email proposing a new encoding.
-
-string encoding       # Encoding of pixels -- channel meaning, ordering, size
-                      # taken from the list of strings in include/sensor_msgs/image_encodings.h
-
-uint8 is_bigendian    # is this data bigendian?
-uint32 step           # Full row length in bytes
-uint8[] data          # actual matrix data, size is (step * rows)
-#+END_EXAMPLE
-*** DONE =control_node=
-    CLOSED: [2017-09-18 lun 02:27]
-#+BEGIN_EXAMPLE
-control_node will read it and write it for localization_node to read.
-#+END_EXAMPLE
-**** DONE Message Transport
-     CLOSED: [2017-09-18 lun 02:27]
-      - Read the image from [[=planning_node=]]
-      - Rebroadcast it.
-*** DONE =localization_node=
-    CLOSED: [2017-09-18 lun 02:27]
-#+BEGIN_EXAMPLE
-the localization_node will read and write it for
-visualization_node and planning_node to read.
-#+END_EXAMPLE
-**** DONE Message Transport
-     CLOSED: [2017-09-18 lun 02:27]
-     Same as [[=control_node=]]
-*** DONE =visualization_node=
-    CLOSED: [2017-09-18 lun 02:27]
-#+BEGIN_EXAMPLE
-visualization_node will have an openCV code to display a circle in a
-rectangular window representing the current position of the "robot" as
-a simple circle.
-#+END_EXAMPLE
-**** DONE Data Endpoint
-     CLOSED: [2017-09-18 lun 02:27]
-     Just print out some stuff.
-
-** TODO Follow-up [0/2]
-   - [ ] set proper names on the topics [0/4]
-     - [ ] blobs :: control -> localization
-     - [ ] poses :: localization -> planning
-     - [ ] commands :: planning -> control
-     - [ ] trajectories :: traj-calc -> planning
-   - [ ] each node as a separate package as in Figure [[fig:newnodestructure]] [0/4]
-     - [ ] control
-     - [ ] localization
-     - [ ] planning
-     - [ ] traj-calc
    #+CAPTION: Ahmet's New Node Structure
+   #+ATTR_HTML: style="display:inline;margin:10px;"
    #+LABEL: fig:newnodestructure
-   #+ATTR_HTML: style="display:inline;margin:10px;"
-   [[file:./material/newnodes.png]]
+   [[file:material/newnodes.png]]
 
-   #+CAPTION: Ahmet's Updated Node Structure
-   #+LABEL: fig:updatednodestructure
-   #+ATTR_HTML: style="display:inline;margin:10px;"
-   [[file:material/ros-architecture.png][file:~/workspace/ebug2014-ros/docs/guide/material/ros-architecture.png]]
+** Neverending Story
+   #+CAPTION: New Ahmet's Delirium
+   #+ATTR_LaTeX: scale=0.75
+   #+ATTR_HTML: :width 100%
+   #+LABEL: fig:newstructure
+   [[file:material/updatedSchemacropped.png]]
+   
+   Please reference the schema of Figure [[fig:newstructure]].
 
-* Image Comparison
-  :PROPERTIES:
-  :HTML_CONTAINER_CLASS: sponsors
-  :END:
-   #+ATTR_HTML: :height 500px
-   [[./material/newnodes.png]]
-   #+ATTR_HTML: :height 500xp
-   [[./material/oldScreenshot.png]]
+   Main Objective: *move Erwyn's Code to ROS system*
+
+*** Target Node
+     - Localization Node :: Link Between Blobs and Poses
+
+*** General Directive
+    - Asynchronous Operations
+      - Read from BLOBS
+      - Write to POSES
+    - Callback Operation
+      - Upon Reception -> Activate Erwyn's Code -> Publish the results
+
+    Blobs and Poses are ROS Topics;
+
+      
+
+*** General Description
+
+#+BEGIN_QUOTE
+one problem is waiting: integration of Erwin's code into the ROS
+framework you have created. Erwin has sent his C++ code. It reads
+the information sent by the blob camera and spits out the following
+tuples: (=id_of_ebug,x_loc,y_loc,orientation=) for each eBug it
+finds.
+
+-- The Old Man
+#+END_QUOTE
+
+    
+
+*** Involved Data
+    For each FRAME:
+
+**** Basic Data
+     :PROPERTIES:
+     :CUSTOM_ID: sec-basic_data
+     :END:
+     Timestamp + data about detected robots
+     | General timestamp | detected robot Array |
+     
+***** Detected Robot Array
+<<diocane>>
+      | Robot ID | x-pos | y-pos | orientation |
+
+**** Extended Data
+     :PROPERTIES:
+     :CUSTOM_ID: sec-extended_data
+     :END:      
+     |Frame ID | Camera Data | Size |[[Basic Data][Basic Data]] |
+
+     - Size :: Singleton -> put an ~fuint_32~
+
+***** Camera Data
+      | blob-id | x-pos | y-pos | colour | radius |
+
+*** Ways of calling the program
+     
+     1. With =-v=
+	* Prints out [[Extended Data][Extended Data]]
+     2. Without =-v= 
+	* Prints out [[Basic Data][Basic Data]]
+
+# * Dioscemo
+#   [[#sec-extended_data]]
+** First Things First
+
+*** Refactor code
+
+**** Steps Taken
+     - eliminated function declaration in main.cpp
