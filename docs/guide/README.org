@@ -162,7 +162,7 @@ the information sent by the blob camera and spits out the following
 tuples: (=id_of_ebug,x_loc,y_loc,orientation=) for each eBug it
 finds.
 
--- The Old Man
+-- Da Man
 #+END_QUOTE
 
     
@@ -178,7 +178,6 @@ finds.
      | General timestamp | detected robot Array |
      
 ***** Detected Robot Array
-<<diocane>>
       | Robot ID | x-pos | y-pos | orientation |
 
 **** Extended Data
@@ -199,7 +198,6 @@ finds.
      2. Without =-v= 
 	* Prints out [[Basic Data][Basic Data]]
 
-# * Dioscemo
 #   [[#sec-extended_data]]
 ** First Things First
 
