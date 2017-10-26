@@ -1,0 +1,29 @@
+mv ./SuperLUSupport/.svn ./SuperLUSupport/.svn-bak mv
+mv ./Eigen2Support/.svn ./Eigen2Support/.svn-bak mv
+mv ./Eigen2Support/Geometry/.svn ./Eigen2Support/Geometry/.svn-bak
+mv ./SparseCore/.svn ./SparseCore/.svn-bak
+mv ./misc/.svn ./misc/.svn-bak
+mv ./SparseCholesky/.svn ./SparseCholesky/.svn-bak
+mv ./Core/util/.svn./Core/util/.sv-bak
+mv ./Core/arch/NEON/.svn ./Core/arch/NEON/.svn-bak
+mv ./Core/arch/AltiVec/.svn ./Core/arch/AltiVec/.svn-bak
+mv ./Core/arch/.svn./Core/arch/.sv-bak
+mv ./Core/arch/Default/.svn ./Core/arch/Default/.svn-bak
+mv ./Core/arch/SSE/.svn ./Core/arch/SSE/.svn-bak
+mv ./Core/.svn./Core/.sv-bak
+mv ./Core/products/.svn ./Core/products/.svn-bak
+mv ./UmfPackSupport/.svn ./UmfPackSupport/.svn-bak
+mv ./SVD/.svn ./SVD/.svn-bak
+mv ./Cholesky/.svn./Cholesky/.sv-bak
+mv ./PaStiXSupport/.svn ./PaStiXSupport/.svn-bak
+mv ./PardisoSupport/.svn ./PardisoSupport/.svn-bak
+mv ./LU/arch/.svn./LU/arch/.sv-bak
+mv ./LU/.svn ./LU/.svn-bak
+mv ./plugins/.svn ./plugins/.svn-bak
+mv ./CholmodSupport/.svn ./CholmodSupport/.svn-bak
+mv ./QR/.svn./QR/.sv-bak
+mv ./Geometry/arch/.svn ./Geometry/arch/.svn-bak
+mv ./Geometry/.svn ./Geometry/.svn-bak
+mv ./Householder/.svn ./Householder/.svn-bak
+mv ./Jacobi/.svn./Jacobi/.sv-bak
+mv ./StlSupport/.svn./StlSupport/.sv-bak

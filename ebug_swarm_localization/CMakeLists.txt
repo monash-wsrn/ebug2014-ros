@@ -17,11 +17,12 @@ catkin_simple()
 # find_package(Boost REQUIRED COMPONENTS system thread)
 # find_package(REQUIRED COMPONENTS roscpp std_msgs message_generation)
 #cs_add_library(my_lib src/my_lib.cpp)
-
+cs_add_library(EBugData src/EBugData.cpp)
 cs_add_executable(localization_node src/localization_node.cpp)
 # target_link_libraries(my_exec my_lib)
 
 target_link_libraries(localization_node
+  EBugData
   ${catkin_LIBRARIES}
   )
 
