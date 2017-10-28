@@ -33,11 +33,13 @@ struct eBug {
 	float angle;
 };
 
-struct
+struct point
 {
 	float x, y, size;
 	int colour;
-} points[MAX_BLOBS];
+};
+
+extern point points[MAX_BLOBS];
 
 struct myEllipse
 {

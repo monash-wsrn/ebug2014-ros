@@ -8,6 +8,8 @@ using namespace std;
 
 #define PRINT_DEBUG 1
 
+point points[MAX_BLOBS];
+
 ros::Publisher *pubPtr;
 
 void dataReceived(const ebug_swarm_msg::frame::ConstPtr& frameIn){
