@@ -36,8 +36,9 @@ struct eBug {
 struct
 {
 	float x, y, size;
-	uint8_t colour;
+	int colour;
 } points[MAX_BLOBS];
+
 struct myEllipse
 {
 	float x, y, rx, ry, t;
@@ -48,9 +49,9 @@ typedef signed long int32;
 
 std::string ExtractCurrentTimeStamp(std::string &st);
 void ExtractBlobInformation(std::string &st);
-void knn_graph_partition(uint8 n_blobs, std::vector<eBug> &eBugsInfo, int &count);
-void identify(std::vector<uint8> leds, std::vector<eBug> &eBugsInfo, int &count);
-myEllipse fitEllipse(std::vector<uint8> &component);
+void knn_graph_partition(int n_blobs, std::vector<eBug> &eBugsInfo, int &count);
+void identify(std::vector<int> leds, std::vector<eBug> &eBugsInfo, int &count);
+myEllipse fitEllipse(std::vector<int> &component);
 float min_rounding(std::vector<float> &angles);
 float ellipse_to_circle(float phi, float rz);
 float circle_to_ellipse(float theta, float rz);

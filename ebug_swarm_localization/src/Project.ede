@@ -1,7 +1,0 @@
-(ede-cpp-root-project "EbugLocalization"
-		      :file "~/workspace/EBugLocalization_K-NearestNeighbours/EBugLocalization_K-NearestNeighbours/main.cpp"
-		      :name "ebugLocalizationControl"
-		      :include-path '(
-				      "/"
-				      "Eigen")
-		      )

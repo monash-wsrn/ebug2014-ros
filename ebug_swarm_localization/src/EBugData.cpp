@@ -4,7 +4,7 @@ using namespace std;
 using std::array;
 
 const float pi = 4 * atan(1);
-const array<array<uint8, 16>, 15> seqs{ {
+const array<array<int, 16>, 15> seqs{ {
 	{ { 2, 2, 1, 0, 0, 2, 0, 2, 1, 2, 2, 1, 2, 2, 0, 1 } },
 	{ { 0, 1, 0, 0, 0, 1, 0, 2, 1, 2, 0, 1, 2, 1, 0, 1 } },
 	{ { 2, 0, 1, 1, 1, 1, 0, 0, 0, 2, 2, 2, 2, 2, 1, 0 } },
@@ -22,42 +22,41 @@ const array<array<uint8, 16>, 15> seqs{ {
 	{ { 0, 2, 1, 1, 2, 1, 0, 0, 0, 0, 2, 0, 0, 1, 1, 0 } },
 	} };
 
-void knn_graph_partition(uint8 n_blobs, std::vector<eBug> &eBugsInfo, int &count) //constructs 2-nearest neighbour graph and returns connected components
+void knn_graph_partition(int n_blobs, std::vector<eBug> &eBugsInfo, int &count) //constructs 2-nearest neighbour graph and returns connected components
 {
 	using namespace std;
-
-	static array<uint8, MAX_BLOBS> numbers;
+	static array<int, MAX_BLOBS> numbers;
 	static bool first = true;
 	if (first) iota(numbers.begin(), numbers.end(), 0);
 	first = false;
-
-	array<vector<uint8>, MAX_BLOBS> knngraph;
-
-	for (uint8 i = 0; i<n_blobs; i++) //determine all edges in 2-nearest neighbour graph
+	// printf("nblobs: %i, %d, %f, %s\n", n_blobs, n_blobs, n_blobs, n_blobs);
+	// printf("nblobs: %i\n", n_blobs);
+	// cout << "Vediamo che cazzo Arriva..nblobs: " << n_blobs << " count: " << count << " size: " << eBugsInfo.size() << " MAX_BLOBS: " << MAX_BLOBS  << "\n";
+	array<vector<int>, MAX_BLOBS> knngraph;
+	for (int i = 0; i<n_blobs; i++) //determine all edges in 2-nearest neighbour graph
 	{
-		array<uint8, 3> neighbours;
+		array<int, 3> neighbours;
 		static array<int32, MAX_BLOBS> dists;
-		for (uint8 j = 0; j<n_blobs; j++)
+		for (int j = 0; j<n_blobs; j++)
 		{
 			int32 x = points[j].x - points[i].x;
 			int32 y = points[j].y - points[i].y;
 			dists[j] = x*x + y*y; //scale y coordinate by 5 in distance calculation
 		}
 		partial_sort_copy(numbers.begin(), numbers.begin() + n_blobs, neighbours.begin(), neighbours.end(),
-			[](uint8 a, uint8 b){return dists[a]<dists[b]; });
+			[](int a, int b){return dists[a]<dists[b]; });
 
 		knngraph[i].insert(knngraph[i].end(), neighbours.begin() + 1, neighbours.end());
-		for (uint8 j = 1; j<neighbours.size(); j++) knngraph[neighbours[j]].push_back(i);
+		for (int j = 1; j<neighbours.size(); j++) knngraph[neighbours[j]].push_back(i);
 	}
-
 	static bitset<MAX_BLOBS> done;
 	done.reset();
-
-	for (uint8 i = 0; i<n_blobs; i++) //partition graph into connected components
+	
+	for (int i = 0; i<n_blobs; i++) //partition graph into connected components
 	{
 		if (done[i]) continue;
-		vector<uint8> component;
-		queue<uint8> q;
+		vector<int> component;
+		queue<int> q;
 		q.push(i);
 		while (!q.empty()) //breadth-first spanning tree search
 		{
@@ -77,14 +76,14 @@ void knn_graph_partition(uint8 n_blobs, std::vector<eBug> &eBugsInfo, int &count
 }
 
 
-void identify(std::vector<uint8> leds, std::vector<eBug> &eBugsInfo, int &count)
+void identify(std::vector<int> leds, std::vector<eBug> &eBugsInfo, int &count)
 {
 	float centre_x, centre_y;
 	myEllipse e = fitEllipse(leds); //fit ellipse to all leds in component
 
 	float s = sin(e.t);
 	float c = cos(e.t);
-	vector<uint8> good;
+	vector<int> good;
 	for (auto i : leds)
 	{
 		float x0 = points[i].x - e.x;
@@ -113,7 +112,7 @@ void identify(std::vector<uint8> leds, std::vector<eBug> &eBugsInfo, int &count)
 
 	float rz = max(e.rx, e.ry) / FOCAL_WIDTH;
 	vector<float> angles(good.size());
-	for (uint8 i = 0; i<good.size(); i++)
+	for (int i = 0; i<good.size(); i++)
 	{
 		float x0 = points[good[i]].x - e.x;
 		float y0 = points[good[i]].y - e.y;
@@ -125,10 +124,10 @@ void identify(std::vector<uint8> leds, std::vector<eBug> &eBugsInfo, int &count)
 #if PRINT_DEBUG
 	cout << "\nX = " << centre_x*SCALE << "\tY = " << centre_y*SCALE << "\tAngle = " << base_angle << endl;
 #endif
-	array<uint8, 16> rounded;
+	array<int, 16> rounded;
 	fill(rounded.begin(), rounded.end(), 3);
 	array<float, 16> size{};
-	for (uint8 i = 0; i<good.size(); i++)
+	for (int i = 0; i<good.size(); i++)
 	{
 		int z = round((angles[i] - base_angle) * 8 / pi + 16);
 		z %= 16;
@@ -137,10 +136,10 @@ void identify(std::vector<uint8> leds, std::vector<eBug> &eBugsInfo, int &count)
 	}
 
 	bool matched = false;
-	pair<uint8, uint8> id;
-	for (uint8 j = 0; j<seqs.size(); j++) for (uint8 k = 0; k<16; k++) //try to match observed sequence to one from the table
+	pair<int, int> id;
+	for (int j = 0; j<seqs.size(); j++) for (int k = 0; k<16; k++) //try to match observed sequence to one from the table
 	{
-		uint8 l;
+		int l;
 		for (l = 0; l<16; l++) if (rounded[l] != 3 && rounded[l] != seqs[j][15 - (k + l) % 16]) break;
 		if (l == 16)
 		{
@@ -155,7 +154,7 @@ void identify(std::vector<uint8> leds, std::vector<eBug> &eBugsInfo, int &count)
 
 	if (!matched) return;
 
-	uint8 led0 = 15 - id.second;
+	int led0 = 15 - id.second;
 	float phi = circle_to_ellipse(led0*pi / 8 + base_angle, rz) + pi / 2; //find angle of led0
 
 	float x = cos(phi)*e.rx;
@@ -172,26 +171,26 @@ void identify(std::vector<uint8> leds, std::vector<eBug> &eBugsInfo, int &count)
 	count++;
 }
 
-myEllipse fitEllipse(std::vector<uint8> &component)
+myEllipse fitEllipse(std::vector<int> &component)
 {
 	using namespace Eigen;
 
 	float xoffset, yoffset;
 	Vector3f vx, vy;
 	{
-		uint8 n;
+		int n;
 		Matrix<float, 32, 1> x, y, size;
 		float xrange, yrange;
 		{
 			n = component.size();
 			if (n>32) n = 32;
-			for (uint8 i = 0; i<n; i++)
+			for (int i = 0; i<n; i++)
 			{
 				x[i] = points[component[i]].x;
 				y[i] = points[component[i]].y;
 				size[i] = points[component[i]].size;
 			}
-			for (uint8 i = n; i<32; i++) x[i] = y[i] = size[i] = 0;
+			for (int i = n; i<32; i++) x[i] = y[i] = size[i] = 0;
 
 			float xmin = x.segment(0, n).minCoeff();
 			float ymin = y.segment(0, n).minCoeff();
@@ -203,7 +202,7 @@ myEllipse fitEllipse(std::vector<uint8> &component)
 			xrange = (xmax - xmin) / 2;
 			yrange = (ymax - ymin) / 2;
 
-			for (uint8 i = 0; i<n; i++)
+			for (int i = 0; i<n; i++)
 			{
 				x[i] -= xoffset;
 				x[i] /= xrange;
