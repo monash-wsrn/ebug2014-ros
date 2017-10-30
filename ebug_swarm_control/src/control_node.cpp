@@ -15,7 +15,7 @@ void dataReceived(const ebug_swarm_msg::dataArray& arrayIn){
     std::string strBlobsInfo, strTemp;
 
     //Open log file
-    eBugLogFile.open("/home/vagrant/catkin_ws/src/ebug_swarm_control/src/newlog.txt");
+    eBugLogFile.open("~/catkin_ws/src/ebug_swarm_control/src/newlog.txt");
 
     if (eBugLogFile.fail())
       {
