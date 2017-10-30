@@ -11,6 +11,7 @@
       type = "control_node"
       name = "Control_Node"
       launch-prefix = "xterm -e"
+      args = "/home/vagrant/catkin_ws/src/ebug_swarm_control/src/newlog.txt"
       required = "true">
     </node>
       <node

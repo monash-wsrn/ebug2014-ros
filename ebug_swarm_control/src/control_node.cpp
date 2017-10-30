@@ -3,6 +3,7 @@
 using namespace std;
 
 ros::Publisher *pubPtr;
+std::string position;
 
 void dataReceived(const ebug_swarm_msg::dataArray& arrayIn){
     ROS_INFO_STREAM("Control node: Commands received and blobs sent. Timestamp: " 
@@ -15,7 +16,7 @@ void dataReceived(const ebug_swarm_msg::dataArray& arrayIn){
     std::string strBlobsInfo, strTemp;
 
     //Open log file
-    eBugLogFile.open("~/catkin_ws/src/ebug_swarm_control/src/newlog.txt");
+    eBugLogFile.open(position);
 
     if (eBugLogFile.fail())
       {
@@ -122,20 +123,38 @@ void dataReceived(const ebug_swarm_msg::dataArray& arrayIn){
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "controlnode");
-    
-    ros::NodeHandle nh;
-    
-//     pubPtr = new ros::Publisher(
-//         nh.advertise<sensor_msgs::Image>("imagecontrol",1000));    
-    
-    pubPtr = new ros::Publisher(
-        nh.advertise<ebug_swarm_msg::frame>("blobs",1000));    
+  int i=0;
+  printf("\ncmdline args count=%i", argc);
+  
+  /*  First argument is executable name only */
+  printf("\nexe name=%s", argv[0]);
+  
+  for (i=1; i<= argc; i++) {
+    printf("\narg%d=%s", i, argv[i]);
+  }
 
- 
+  if (argc>0) {
+    position = argv[1];
+  } else {
+    position = "~/catkin_ws/src/ebug_swarm_control/src/newlog.txt";
+  }
+
+  cout << "Log file position: " << position << endl;
+  
+  ros::init(argc, argv, "controlnode");
+  
+  ros::NodeHandle nh;
     
-    
-    ros::Subscriber sub = nh.subscribe("commands", 1000, &dataReceived);
-    ros::spin();
-    return 0;
+  //     pubPtr = new ros::Publisher(
+  //         nh.advertise<sensor_msgs::Image>("imagecontrol",1000));    
+  
+  pubPtr = new ros::Publisher(
+			      nh.advertise<ebug_swarm_msg::frame>("blobs",1000));    
+  
+  
+  
+  
+  ros::Subscriber sub = nh.subscribe("commands", 1000, &dataReceived);
+  ros::spin();
+  return 0;
 }
