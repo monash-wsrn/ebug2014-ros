@@ -16,7 +16,7 @@ def dbgprint(s):
         print '-->', s
 
 class Bridge:
-    def __init__(self,device='/dev/ttyACM0'):
+    def __init__(self,device='/dev/ttyACM1'):
         subprocess.check_call(['stty','-F',device,'raw'])
         self.usb=serial.Serial(device,timeout=0.5)
         dbgprint('Radio is on /dev/ttyACM0')
