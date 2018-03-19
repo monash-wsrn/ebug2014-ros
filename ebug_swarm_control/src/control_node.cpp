@@ -16,6 +16,7 @@ void dataReceived(const ebug_swarm_msg::dataArray& arrayIn){
     std::string strBlobsInfo, strTemp;
 
     //Open log file
+	cout << position <<"\n";
     eBugLogFile.open(position);
 
     if (eBugLogFile.fail())
@@ -124,19 +125,23 @@ void dataReceived(const ebug_swarm_msg::dataArray& arrayIn){
 int main(int argc, char** argv)
 {
   int i=0;
-  printf("\ncmdline args count=%i", argc);
-  
+  printf("\ncmdline args count=%i\n", argc);
+  if(argc < 2) {
+	  printf("too few arguments\n");
+	  return -1;
+  }
+
   /*  First argument is executable name only */
   printf("\nexe name=%s", argv[0]);
   
-  for (i=1; i<= argc; i++) {
+  for (i=1; i< argc; i++) {
     printf("\narg%d=%s", i, argv[i]);
   }
 
-  if (argc>0) {
+  if (argc>1) {
     position = argv[1];
   } else {
-    position = "~/catkin_ws/src/ebug_swarm_control/src/newlog.txt";
+    position = "/~/workspace/src/ebug2014-ros/ebug_swarm_control/src/newlog.txt";
   }
 
   cout << "Log file position: " << position << endl;
