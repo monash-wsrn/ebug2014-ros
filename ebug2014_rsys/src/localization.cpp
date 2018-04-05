@@ -8,7 +8,7 @@
 
 /*
   Thursday 22 March  14:39:01 CET 2018
-  To compile: g++ -std=c++11  -I ./Eigen -o track_ebugs track_ebugs.cpp
+  Remember, to compile  -std=c++11  is needed. 
 */
 
 /*
@@ -62,16 +62,18 @@ struct myEllipse {
   float x, y, rx, ry, t;
 };
 
-//const cv::Scalar colours[] = { cv::Scalar(0, 0, 255), cv::Scalar(0, 128, 0), cv::Scalar(255, 0, 0), cv::Scalar(0) };
+// const cv::Scalar colours[] = { cv::Scalar(0, 0, 255), cv::Scalar(0, 128, 0), cv::Scalar(255, 0, 0), cv::Scalar(0) };
 
 // Function prototypes
 void blobsCallback(const std_msgs::String::ConstPtr &msg);
 static inline string ExtractCurrentTimeStamp(string &st);
-static inline void ExtractBlobInformation(string &st);
+static inline void ExtractBlobInformation(string& st);
 Eigen::Vector3f eig(Eigen::Matrix3f &M);
 myEllipse fitEllipse(std::vector<uint8> &component);
-void identify(std::vector<uint8> leds, std::vector<eBug> &eBugsInfo, int &count);
-void knn_graph_partition(uint8 n_blobs, std::vector<eBug> &eBugsInfo, int &count);
+void identify(std::vector<uint8> leds, std::vector<eBug> &eBugsInfo,
+	      int &count);
+void knn_graph_partition(uint8 n_blobs, std::vector<eBug> &eBugsInfo,
+			 int &count);
 
 int main(int argc, char **argv)
 {
@@ -82,27 +84,36 @@ int main(int argc, char **argv)
   return 0;
 } // main()
 
-void blobsCallback(const std_msgs::String::ConstPtr& msg)
+void blobsCallback(const std_msgs::String::ConstPtr &msg)
 {
-  ROS_INFO("I heard: [%s]", msg->data.c_str());
+  string strBlobsInfo, strTStamp;
+  
+  strBlobsInfo = msg->data.c_str();
+  
+  // Get current time-stamp and convert from string format to integer
+  strTStamp = ExtractCurrentTimeStamp(strBlobsInfo);
+  ROS_INFO("Packet received, timestamp: [%s]", strTStamp.c_str());
+    
+  // Todo !!!
+  // ExtractBlobInformation is called here.
+  
 } // blobsCallback()
 
-static inline string ExtractCurrentTimeStamp(string &st) //pass by reference/alias
+static inline string ExtractCurrentTimeStamp(string &st) 
 {
-  int strIdx;
-  string strTemp;
-  strIdx = st.find_first_of("0123456789");
-  strIdx = st.find_first_of("[", strIdx);
-  if (strIdx >= 0) {
-    strTemp = st.substr(0, strIdx);
-    st.erase(0, strIdx + 1);
-    return strTemp;
-  } else {
-    return "\0";
-  }
+  stringstream ss;
+  ss << st;
+  char delim = ' ';
+  string strFrameNo;
+  string strTStamp;
+
+  getline(ss, strFrameNo, delim); // discard
+  getline(ss, strTStamp, delim);
+  
+  return strTStamp;
 } // ExtractCurrentTimeStamp()
 
-static inline void ExtractBlobInformation(string &st) //pass by reference/alias
+static inline void ExtractBlobInformation(string& st)  
 {
   vector<eBug> eBugs;
   unsigned char colour;
