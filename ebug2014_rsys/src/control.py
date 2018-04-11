@@ -1,3 +1,35 @@
+#!/usr/bin/env python
+
+import rospy
+from std_msgs.msg import String
+
+def sense_control():
+    pub = rospy.Publisher('blobs', String, queue_size=1000)
+    rospy.init_node('control', anonymous=True)
+    rate = rospy.Rate(10) # 10hz
+    while not rospy.is_shutdown():
+        frame = "xxxx xxxx" 
+        rospy.loginfo(frame)
+        pub.publish(frame)
+        rate.sleep()
+
+if __name__ == '__main__':
+    try:
+        sense_control()
+    except rospy.ROSInterruptException:
+        pass
+
+
+
+
+
+
+'''
+Below is the C++ version. 
+
+We use python library for interacting with the eBugs and the blob camera,
+so it is better to write this node in Python. 
+
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 
@@ -29,5 +61,5 @@ int main(int argc, char **argv)
 
   return 0;
 } // main()
-
+'''
 

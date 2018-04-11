@@ -198,9 +198,11 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-add_executable(control src/control.cpp)
-target_link_libraries(control ${catkin_LIBRARIES})
-add_dependencies(control ebug2014_rsys_generate_messages_cpp)
+#(we will use Python for writing the control node)
+#
+#add_executable(control src/control.cpp)
+#target_link_libraries(control ${catkin_LIBRARIES})
+#add_dependencies(control ebug2014_rsys_generate_messages_cpp)
 
 add_executable(localization src/localization.cpp)
 target_link_libraries(localization ${catkin_LIBRARIES})
