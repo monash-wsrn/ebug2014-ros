@@ -4,10 +4,11 @@
   Modified by Erwin Mochtar Wijaya on 05/02/2014            
   Modified by Ahmet Sekercioglu on 22/03/2018        
   Modified by Ahmet Sekercioglu on 03/03/2018 to adapt to ROS environment. 
+  Modified by Ahmet Sekercioglu on 11/04/2018 to adapt to ROS environment. 
+                                   (track_ebugs.cpp,v 1.6)
 */
 
 /*
-  Thursday 22 March  14:39:01 CET 2018
   Remember, to compile  -std=c++11  is needed. 
 */
 
@@ -37,6 +38,8 @@
 #include <bitset>
 #include "float.h"
 #include "Eigen/Dense"
+#include "debug.h" // My PRINTFDB macro,
+                   // to turn on add -DDEBUG to the compilation line
 #include "EBugData.h"
 
 using namespace std;
@@ -48,7 +51,6 @@ using namespace std;
 #define MAX_BLOBS 256
 
 #define SCALE 1.0f
-#define PRINT_DEBUG 0
 
 typedef unsigned char uint8;
 typedef signed long int32;
@@ -67,13 +69,13 @@ struct myEllipse {
 // Function prototypes
 void blobsCallback(const std_msgs::String::ConstPtr &msg);
 static inline string ExtractCurrentTimeStamp(string &st);
-static inline void ExtractBlobInformation(string& st);
+static inline int ExtractBlobInformation(string &st, vector<eBug> &eBugs);
 Eigen::Vector3f eig(Eigen::Matrix3f &M);
 myEllipse fitEllipse(std::vector<uint8> &component);
 void identify(std::vector<uint8> leds, std::vector<eBug> &eBugsInfo,
-	      int &count);
+           	                                                int &count);
 void knn_graph_partition(uint8 n_blobs, std::vector<eBug> &eBugsInfo,
-			 int &count);
+			                                        int &count);
 
 int main(int argc, char **argv)
 {
@@ -86,102 +88,79 @@ int main(int argc, char **argv)
 
 void blobsCallback(const std_msgs::String::ConstPtr &msg)
 {
+  vector<eBug> eBugs;
   string strBlobsInfo, strTStamp;
+  int n_blobs, count = 0;
   
   strBlobsInfo = msg->data.c_str();
   
   // Get current time-stamp and convert from string format to integer
   strTStamp = ExtractCurrentTimeStamp(strBlobsInfo);
   ROS_INFO("Packet received, timestamp: [%s]", strTStamp.c_str());
-    
-  // Todo !!!
-  // ExtractBlobInformation is called here.
-  
-} // blobsCallback()
 
-static inline string ExtractCurrentTimeStamp(string &st) 
-{
-  stringstream ss;
-  ss << st;
-  char delim = ' ';
-  string strFrameNo;
-  string strTStamp;
-
-  getline(ss, strFrameNo, delim); // discard
-  getline(ss, strTStamp, delim);
-  
-  return strTStamp;
-} // ExtractCurrentTimeStamp()
-
-static inline void ExtractBlobInformation(string& st)  
-{
-  vector<eBug> eBugs;
-  unsigned char colour;
-  int strIdx1, strIdx2, strIdx3, strIdx4, x_pos, y_pos, radius, n_blobs, count;	
-  string strTemp, blobInfo, numKey = "0123456789", openBracket = "(", closeBracket = ")";
-  
-  strIdx1 = st.find_first_of(openBracket);
-  strIdx2 = st.find(closeBracket,strIdx1);
-  
-  n_blobs = 0; count = 0;
-  if (strIdx1 >= 0 && strIdx2 >= 0) {
-    do {
-      //get "one" blob information
-      strTemp = st.substr(strIdx1, strIdx2 - strIdx1 + 1);
-      //get each attribute of one blob < x_pos, y_pos, colour, size>
-      strIdx3 = strTemp.find_first_of(numKey);
-      strIdx4 = strTemp.find(",", strIdx3);
-      x_pos = stoi(strTemp.substr(strIdx3, strIdx4 - strIdx3)); //cout << strIdx1 <<"#" << strIdx2 <<"*";
-      
-      strIdx3 = strTemp.find_first_of(numKey, strIdx4);
-      strIdx4 = strTemp.find(",", strIdx3);
-      y_pos = stoi(strTemp.substr(strIdx3, strIdx4 - strIdx3)); //cout << strIdx1 << "#" << strIdx2 << "*";
-      
-      strIdx3 = strTemp.find_first_of(numKey, strIdx4);
-      strIdx4 = strTemp.find(",", strIdx3);
-      colour = stoi(strTemp.substr(strIdx3, strIdx4 - strIdx3)); //cout << strIdx1 << "#" << strIdx2 << "*";
-      
-      strIdx3 = strTemp.find_first_of(numKey, strIdx4);
-      strIdx4 = strTemp.find(")", strIdx3);//ends with closing bracket
-      radius = stoi(strTemp.substr(strIdx3, strIdx4 - strIdx3)); //cout << strIdx1 << "#" << strIdx2 << "*";
-      
-      points[n_blobs].x      = (float)x_pos;
-      points[n_blobs].y      = (float)y_pos;
-      points[n_blobs].size   = (float)radius;
-      points[n_blobs].colour = colour;
-      
-      n_blobs++;
-#if PRINT_DEBUG
-      cout << setw(10) << left << n_blobs;
-      cout << setw(15) << left << x_pos; 
-      cout << setw(15) << left << y_pos;
-      cout << setw(10) << left << (int)colour;
-      cout << setw(8) << left << radius << endl;
-#endif
-      // Remove one blob information and move to next blob
-      st.erase(0, strIdx2 + 1);
-      strIdx1 = st.find_first_of(openBracket);
-      strIdx2 = st.find_first_of(closeBracket, strIdx1);
-    } while (strIdx1 >= 0 && strIdx2 >= 0);
-  }
-
+  eBugs.clear(); 
+  n_blobs = ExtractBlobInformation(strBlobsInfo, eBugs); 
   if (n_blobs >= 5) {
     // Apply K-nearest neighbour algorithm to classify groups of blobs
     // as the eBugs
     knn_graph_partition(n_blobs, eBugs, count);
   }
-
   if (eBugs.size() == 0) {
-    // No eBug detected.
-    cout << "0" << endl; 
-  } else {
+    ROS_INFO("[%s] No eBug(s) detected.", strTStamp.c_str());
+  } else { 
+    ROS_INFO("[%s] %d eBug(s) detected:", strTStamp.c_str(),(int) eBugs.size());
     for (int i = 0; i < (int) eBugs.size(); i++) {
-      cout << (int) eBugs.size() << " ";
-      // cout << "ID= " << eBugs[i].ID << "\t" << "x= " << eBugs[i].x_pos << "\t" << "y= " << eBugs[i].y_pos << "\t" << "angle= " << eBugs[i].angle << endl;
-      cout << " " << eBugs[i].ID << " " << eBugs[i].x_pos << " " << eBugs[i].y_pos << " " <<  eBugs[i].angle << endl;
-    }
+      ROS_INFO("   %d %.0f %.0f %.0f",
+ 	           eBugs[i].ID, eBugs[i].x_pos, eBugs[i].y_pos, eBugs[i].angle);
+    } 
   }
-  //  cout << string(20, '-') << endl;
+} // blobsCallback()
+
+static inline string ExtractCurrentTimeStamp(string &st) 
+{
+  stringstream ss;
+  char delim = ' ';
+  string strFrameNo;
+  string strTStamp;
+
+  ss << st;
+
+  ss >> strFrameNo; 
+  ss >> strTStamp;  
+
+  return strTStamp;
+} // ExtractCurrentTimeStamp()
+
+static inline int ExtractBlobInformation(string &st, vector<eBug> &eBugs)
+{
+  stringstream ss;
+  string token;
+  int x_pos, y_pos, radius, n_blobs, count;	
+  unsigned char colour;
+  
+  ss << st;
+  
+  ss >> token;  // Discard the frame no
+  ss >> token;  // Discard the timestamp
+
+  int blob = 0;
+  while (ss >> token) {  // Each blob is a 4-tuple 
+    points[blob].x =  stof(token);
+    ss >> token;
+    points[blob].y =  stof(token);
+    ss >> token;
+    points[blob].colour = atoi(token.c_str());
+    ss >> token;
+    points[blob].size = stof(token);
+    ++blob;
+  } //
+  n_blobs = blob; 
+  PRINTFDB(("Blob\tX-Pos\tY-Pos\tColour\tRadius\n"));
+  for (int blob = 0; blob < n_blobs; blob++) {
+    PRINTFDB(("%d\t%.0f\t%.0f\t%d\t%.0f\n", blob, points[blob].x,
+	      points[blob].y, points[blob].colour, points[blob].size));
+  } 
+  return n_blobs;
 } // ExtractBlobInformation()
 
 Eigen::Vector3f eig(Eigen::Matrix3f &M)
@@ -384,12 +363,10 @@ void identify(std::vector<uint8> leds, std::vector<eBug> &eBugsInfo, int &count)
     float r2 = x*x + y*y;
     // Select only points that fit the ellipse well:
     if (r2>0.9 && r2<1.1) good.push_back(i); 
-  }
+  } // for
 
-  if (good.size() < 5)	{
-#if PRINT_DEBUG
-    cout << endl << "THE MIN NUMBER OF POINTS TO FIT THE ELLIPSE IS NOT MET\n";
-#endif
+  if (good.size() < 5) {
+    PRINTFDB(("The minimum number of points to fit the ellipse is not met.\n"));
     return;
   }
   e = fitEllipse(good); //refit ellipse to only good points
@@ -411,9 +388,6 @@ void identify(std::vector<uint8> leds, std::vector<eBug> &eBugsInfo, int &count)
     angles[i] = ellipse_to_circle(-atan2(y, x) - pi / 2, rz);
   }
   float base_angle = min_rounding(angles);
-#if PRINT_DEBUG
-  cout << "\nX = " << centre_x*SCALE << "\tY = " << centre_y*SCALE << "\tAngle = " << base_angle << endl;
-#endif
   array<uint8, 16> rounded;
   fill(rounded.begin(), rounded.end(), 3);
   array<float, 16> size{};
@@ -422,24 +396,23 @@ void identify(std::vector<uint8> leds, std::vector<eBug> &eBugsInfo, int &count)
     z %= 16;
     auto &p = points[good[i]];
     if (size[z]<p.size) size[z] = p.size, rounded[z] = p.colour;
-  }
+  } // for
   
   bool matched = false;
   pair<uint8, uint8> id;
-  for (uint8 j = 0; j<seqs.size(); j++) for (uint8 k = 0; k<16; k++) {
-      //try to match observed sequence to one from the table
+  for (uint8 j = 0; j<seqs.size(); j++) {
+    for (uint8 k = 0; k<16; k++) {
+      // Try to match observed sequence to one from the table
       uint8 l;
-      for (l = 0; l<16; l++) if (rounded[l] != 3 && rounded[l] != seqs[j][15 - (k + l) % 16]) break;
+      for (l = 0; l<16; l++)
+	if (rounded[l] != 3 && rounded[l] != seqs[j][15 - (k + l) % 16]) break;
       if (l == 16) {
-#if 0
-	cout << endl << "match detected" << endl;
-#endif
 	matched ^= true;
 	if (!matched) break; //ensure there is only one match
 	id = make_pair(j, k);
-      }
-    }
-  
+      } // if
+    } // for
+  } // for
   if (!matched) return;
   
   uint8 led0 = 15 - id.second;
@@ -455,7 +428,7 @@ void identify(std::vector<uint8> leds, std::vector<eBug> &eBugsInfo, int &count)
   float y_diff = (x*sin(e.t) + y*cos(e.t)) * SCALE;
   float angle = -atan2(y_diff, x_diff) * 180 / pi;
   if (angle < 0) angle += 360;
-
+  
   eBugsInfo.push_back({ id.first, centre_x*SCALE, centre_y*SCALE, angle });
   
   count++;
@@ -472,9 +445,9 @@ void knn_graph_partition(uint8 n_blobs, std::vector<eBug> &eBugsInfo, int &count
   first = false;
   
   array<vector<uint8>, MAX_BLOBS> knngraph;
-  
-  for (uint8 i = 0; i<n_blobs; i++) {
-    //determine all edges in 2-nearest neighbour graph
+
+  for (uint8 i = 0; i < n_blobs; i++) {
+    // Determine all edges in 2-nearest neighbour graph
     array<uint8, 3> neighbours;
     static array<int32, MAX_BLOBS> dists;
     for (uint8 j = 0; j<n_blobs; j++) {
@@ -512,7 +485,6 @@ void knn_graph_partition(uint8 n_blobs, std::vector<eBug> &eBugsInfo, int &count
     } // while
     if (component.size() >= 5) {
       identify(component, eBugsInfo, count);
-      //cout << endl << "Component size = " << component.size() << endl;
     }
   }
 } // knn_graph_partition()

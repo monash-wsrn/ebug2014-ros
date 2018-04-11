@@ -16,23 +16,13 @@ int main(int argc, char **argv)
     std_msgs::String msg;
     std::stringstream ss;
 
-    // This is a line from the logfile 1ebug_stationary_20sec_frames.txt
+    // This is a line from the logfile: 1ebug_85cm_moving_frames.log
     // Normally the blob data  will come from the camera. 
-    ss << count << " 1822945022   612  442  1  4    633  446  0  5    588  446  2  5    655  457  1  4    570  461  2  6    669  475  2  6    556  484  0  5    676  497  2  6    555  504  2  5    673  520  2  6    562  529  1  4    663  543  1  4    575  546  2  6    644  558  1  5    620  563  1  4    596  559  1  4";
+    ss << count << "2 1822945022  762  258  1  4    737  256  0  3    717  262  1  4    780  267  2  5    698  276  2  5    796  285  2  4    687  296  2  5    803  306  2  5    680  318  0  1    688  321  0  2    804  330  1  4    693  340  2  5    791  350  1  4    709  361  1  4    728  368  2  6    777  366  1  4    753  373  1  4";
     msg.data = ss.str();
-
     ROS_INFO("%s", msg.data.c_str());
-
-    /**
-     * The publish() function is how you send messages. The parameter
-     * is the message object. The type of this object must agree with
-     * the type given as a template parameter to the advertise<>()
-     * call, as was done in the constructor above.
-     */
     blobs_pub.publish(msg);
-
     ros::spinOnce();
-
     loop_rate.sleep();
     count++;
   }
