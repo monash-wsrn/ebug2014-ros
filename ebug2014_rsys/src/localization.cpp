@@ -75,8 +75,7 @@ myEllipse fitEllipse(std::vector<uint8> &component);
 void identify(std::vector<uint8> leds, std::vector<eBug> &eBugsInfo,
            	                                                int &count);
 void knn_graph_partition(uint8 n_blobs, std::vector<eBug> &eBugsInfo,
-			                                        int &count);
-
+     			                                        int &count);
 class SubscribeAndPublish
 {
 public:
@@ -132,14 +131,6 @@ private:
   ros::Publisher pub_;
   ros::Subscriber sub_;;
 }; // class SubscribeAndPublish
-
-int main(int argc, char **argv)
-{
-  ros::init(argc, argv, "localization");
-  SubscribeAndPublish SAPObject;
-  ros::spin();
-  return 0;
-} // main()
 
 static inline string ExtractCurrentTimeStamp(string &st) 
 {
@@ -514,3 +505,12 @@ void knn_graph_partition(uint8 n_blobs, std::vector<eBug> &eBugsInfo, int &count
     }
   }
 } // knn_graph_partition()
+
+int main(int argc, char **argv)
+{
+  ros::init(argc, argv, "localization");
+  SubscribeAndPublish SAPObject;
+  ros::spin();
+  return 0;
+} // main()
+
