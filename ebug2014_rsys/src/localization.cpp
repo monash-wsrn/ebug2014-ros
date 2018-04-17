@@ -24,8 +24,6 @@
   * Moved the routines in the LedDetection.h in here, deleted LedDetection.h
 */
 
-#include "ros/ros.h"
-#include "std_msgs/String.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -36,6 +34,8 @@
 #include <array>
 #include <queue>
 #include <bitset>
+#include "ros/ros.h"
+#include "std_msgs/String.h"
 #include "float.h"
 #include "Eigen/Dense"
 #include "debug.h" // My PRINTFDB macro,
@@ -77,44 +77,69 @@ void identify(std::vector<uint8> leds, std::vector<eBug> &eBugsInfo,
 void knn_graph_partition(uint8 n_blobs, std::vector<eBug> &eBugsInfo,
 			                                        int &count);
 
+class SubscribeAndPublish
+{
+public:
+  SubscribeAndPublish()
+  {
+    pub_ = n_.advertise<std_msgs::String>("poses", 100);
+    sub_ = n_.subscribe("blobs", 100, &SubscribeAndPublish::blobsCallback,this);
+  } // SubscribeAndPublish()
+  
+  void blobsCallback(const std_msgs::String::ConstPtr &blobs_msg)
+  {
+    // We get the blobs, calculate the eBug poses and write them
+    // into the "poses" topic.
+    vector<eBug> eBugs;
+    string strBlobsInfo, strTStamp;
+    int n_blobs, count = 0;
+    stringstream ss;
+    std_msgs::String poses_msg;
+    
+    strBlobsInfo = blobs_msg->data.c_str();
+    
+    // Get current time-stamp and convert from string format to integer
+    strTStamp = ExtractCurrentTimeStamp(strBlobsInfo);
+    ROS_INFO("Packet received, timestamp: [%s]", strTStamp.c_str());
+    
+    eBugs.clear(); 
+    n_blobs = ExtractBlobInformation(strBlobsInfo, eBugs); 
+    if (n_blobs >= 5) {
+      // Apply K-nearest neighbour algorithm to classify groups of blobs
+      // as the eBugs
+      knn_graph_partition(n_blobs, eBugs, count);
+    }
+    if (eBugs.size() == 0) {
+      ROS_INFO("[%s] No eBug(s) detected.", strTStamp.c_str());
+    } else {
+      ss.str(""); 
+      ROS_INFO("[%s] %d eBug(s) detected:",
+	                            strTStamp.c_str(), (int) eBugs.size());
+      ss << eBugs.size() << " ";
+      for (int i = 0; i < (int) eBugs.size(); i++) {
+	ROS_INFO("   %d %.0f %.0f %.0f", eBugs[i].ID,
+		             eBugs[i].x_pos, eBugs[i].y_pos, eBugs[i].angle);
+	ss << eBugs[i].ID << " " <<  eBugs[i].x_pos << " " <<
+	                     eBugs[i].y_pos << " " <<  eBugs[i].angle << " ";
+      } 
+      poses_msg.data = ss.str();
+      pub_.publish(poses_msg);
+    } 
+  } // blobsCallback()
+
+private:
+  ros::NodeHandle n_;
+  ros::Publisher pub_;
+  ros::Subscriber sub_;;
+}; // class SubscribeAndPublish
+
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "localization");
-  ros::NodeHandle nh;
-  ros::Subscriber sub = nh.subscribe("blobs", 1000, blobsCallback);
+  SubscribeAndPublish SAPObject;
   ros::spin();
   return 0;
 } // main()
-
-void blobsCallback(const std_msgs::String::ConstPtr &msg)
-{
-  vector<eBug> eBugs;
-  string strBlobsInfo, strTStamp;
-  int n_blobs, count = 0;
-  
-  strBlobsInfo = msg->data.c_str();
-  
-  // Get current time-stamp and convert from string format to integer
-  strTStamp = ExtractCurrentTimeStamp(strBlobsInfo);
-  ROS_INFO("Packet received, timestamp: [%s]", strTStamp.c_str());
-
-  eBugs.clear(); 
-  n_blobs = ExtractBlobInformation(strBlobsInfo, eBugs); 
-  if (n_blobs >= 5) {
-    // Apply K-nearest neighbour algorithm to classify groups of blobs
-    // as the eBugs
-    knn_graph_partition(n_blobs, eBugs, count);
-  }
-  if (eBugs.size() == 0) {
-    ROS_INFO("[%s] No eBug(s) detected.", strTStamp.c_str());
-  } else { 
-    ROS_INFO("[%s] %d eBug(s) detected:", strTStamp.c_str(),(int) eBugs.size());
-    for (int i = 0; i < (int) eBugs.size(); i++) {
-      ROS_INFO("   %d %.0f %.0f %.0f",
- 	           eBugs[i].ID, eBugs[i].x_pos, eBugs[i].y_pos, eBugs[i].angle);
-    } 
-  }
-} // blobsCallback()
 
 static inline string ExtractCurrentTimeStamp(string &st) 
 {
@@ -159,6 +184,7 @@ static inline int ExtractBlobInformation(string &st, vector<eBug> &eBugs)
   for (int blob = 0; blob < n_blobs; blob++) {
     PRINTFDB(("%d\t%.0f\t%.0f\t%d\t%.0f\n", blob, points[blob].x,
 	      points[blob].y, points[blob].colour, points[blob].size));
+    
   } 
   return n_blobs;
 } // ExtractBlobInformation()

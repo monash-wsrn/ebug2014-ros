@@ -36,6 +36,7 @@ class thresholds(object):
     # 
 # end thresholds
 
+
 nrf = Bridge(u'/dev/ttyACM0')  # '/dev/ttyACM0'
 a = nrf.assign_addresses()
 
@@ -50,6 +51,8 @@ else:
 # overclock PSoC and camera (default is 48MHz, which gives 15fps SXGA,
 # 30fps VGA, 60fps CIF and 120fps QCIF)
 # nrf.send_packet('\x94'+chr(64)) 
+
+# set_camera_res_sxga() # Nick
 
 cv2.namedWindow(u'Blob Camera')
 i = 0
@@ -102,7 +105,7 @@ while True:
             cv2.putText(img, u'%03.0f' % fps_camera, (0, 20), \
                         cv2.FONT_HERSHEY_PLAIN, 1, (128, 128, 0), 1, \
                         cv2.LINE_AA)
-            cv2.putText(img, u'%03.0f' % fps_local, (0, 50), \
+            cv2.putText(img, u'%03.0f' % fps_local, (40, 20), \
                         cv2.FONT_HERSHEY_PLAIN, 1, (128, 128, 0), 1, \
                         cv2.LINE_AA)
             cv2.imshow(u'Blob Camera', img)

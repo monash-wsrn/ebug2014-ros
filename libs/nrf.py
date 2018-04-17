@@ -9,14 +9,14 @@ import time
 
 from io import open
 
-DEBUG = False
+DEBUG = True
 
 def dbgprint(s):
     if DEBUG:
         print '-->', s
 
 class Bridge:
-    def __init__(self,device='/dev/ttyACM1'):
+    def __init__(self,device='/dev/ttyACM0'):
         subprocess.check_call(['stty','-F',device,'raw'])
         self.usb=serial.Serial(device,timeout=0.5)
         dbgprint('Radio is on /dev/ttyACM0')
@@ -455,7 +455,17 @@ class Bridge:
     
     def set_camera_red_gain(self, n):
         self.camera_write_reg(2, n)
-    
+
+    def set_camera_res_sxga(self): # Nick
+        self.camera_write_reg(0x04, 0x00)
+        self.camera_write_reg(0x0C, 0x00)
+        self.camera_write_reg(0x0D, 0x00)
+        self.camera_write_reg(0x11, 0x80)
+        self.camera_write_reg(0x12, 0x00)
+        self.camera_write_reg(0x37, 0x81)
+        self.camera_write_reg(0x38, 0x93)
+        self.camera_write_reg(0x39, 0x50)
+        
     def camera_write_reg(self,reg,value):
 	self.send_packet('\x91'+struct.pack('<BB',reg,value))
         
