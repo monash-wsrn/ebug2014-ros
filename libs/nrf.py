@@ -9,7 +9,7 @@ import time
 
 from io import open
 
-DEBUG = True
+DEBUG = False
 
 def dbgprint(s):
     if DEBUG:

@@ -16,7 +16,7 @@ sys.path.insert(0, '../libs/')
 from nrf import Bridge
 
 class thresholds(object):
-    values = [0x79, 0x9a, 0xb1, 0x5a, 0xc6, 0x70, 0xa3, 0x82]
+    values = [0xA2, 0x99, 0x76, 0x85, 0xB1, 0x8E, 0xa3, 0x82]
 
     def __init__(self, i):
         self.i = i
@@ -32,12 +32,12 @@ class thresholds(object):
             cv2.setTrackbarPos([u'Red', u'Green', u'Blue', u'Magenta'] \
                                [self.i / 2] + u' ' + [u'U', u'V'] \
                                [self.i % 2], u'Blob Camera', old)
-        # end try
+        # 
     # 
-# end thresholds
+# end class thresholds
 
 
-nrf = Bridge(u'/dev/ttyACM0')  # '/dev/ttyACM0'
+nrf = Bridge(u'/dev/ttyACM0')  # or '/dev/ttyACM1' ToDo 
 a = nrf.assign_addresses()
 
 for i in list(a.keys()):
@@ -48,11 +48,10 @@ for i in list(a.keys()):
 else:
     raise RuntimeError(u'No cameras found')
 
+# We are operating the camera at SXGA resolution.
 # overclock PSoC and camera (default is 48MHz, which gives 15fps SXGA,
 # 30fps VGA, 60fps CIF and 120fps QCIF)
 # nrf.send_packet('\x94'+chr(64)) 
-
-# set_camera_res_sxga() # Nick
 
 cv2.namedWindow(u'Blob Camera')
 i = 0
@@ -63,7 +62,7 @@ for colour in [u'Red', u'Green', u'Blue', u'Magenta']:
         i += 1
     # end for
 # end for
-cv2.createTrackbar(u'Exposure',u'Blob Camera',40,480, \
+cv2.createTrackbar(u'Exposure',u'Blob Camera',40,1024, \
                    lambda x:nrf.set_camera_exposure(x)) # exposure in image
                                                         # rows (max is height
                                                         # of image)
@@ -92,7 +91,7 @@ while True:
         prev_ts = ts
         ts, blobs = nrf.get_blobs()
         if ts != prev_ts:
-            img = np.zeros((480, 640, 3), np.uint8)
+            img = np.zeros((512, 640, 3), np.uint8)
             for b in frame_blobs:
                 cv2.circle(img, (b[0] // 2, b[1] // 2), \
                            int(b[3] / math.pi ** 0.5 / 2), \
@@ -110,12 +109,14 @@ while True:
                         cv2.LINE_AA)
             cv2.imshow(u'Blob Camera', img)
             frame_done = True
+            print(ts, frame_blobs)
             frame_blobs = []
-
+        # end if
         frame_blobs += blobs
-
+        
     except RuntimeError, e:
         print e
         continue  # TODO check what kind of error
     # end try
 # end while
+
