@@ -1,0 +1,27 @@
+<launch>
+  <node
+      name = "control.py"
+      type = "control.py"
+      pkg = "ebug2014_rsys"
+      launch-prefix = "xterm -e"
+      required = "true"
+      output="screen"
+  />
+  <node
+      pkg = "ebug2014_rsys"
+      type = "localization"
+      name = "localization"
+      launch-prefix = "xterm -e"
+      required = "true"
+      output="screen"
+  />
+  <node
+      pkg = "ebug2014_rsys"
+      type = "visualization.py"
+      name = "visualization.py"
+      launch-prefix = "xterm -e"
+      required = "true"
+      output="screen"
+  />
+</launch>
+
