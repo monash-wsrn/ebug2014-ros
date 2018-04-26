@@ -8,8 +8,8 @@ from itertools import izip
 
 '''
 We get the eBug pose information in the callback, and use it in the main
-to update the eBug Arena view. 
-Directly dealing with the imagery in the callback does not work. 
+to update the eBug Arena view.
+Directly dealing with the imagery in the callback does not work.
 See: https://answers.ros.org/question/257440/python-opencv-namedwindow-and-imshow-freeze/
 '''
 class getEBugPoses():
@@ -41,10 +41,10 @@ def show_arena():
         k = cv2.waitKey(1) & 0xFF
         if k == 27: break
         count += 1
-    
+
     rospy.spin() # Simply keeps python from exiting until this node is stopped.
     # cv2.destroyAllWindows()
-    
+
 if __name__ == '__main__':
     try:
         show_arena()
