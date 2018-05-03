@@ -24,6 +24,24 @@
   * Moved the routines in the LedDetection.h in here, deleted LedDetection.h
 */
 
+/*
+  Monday 30 April 14:37:40 CEST 2018
+  Tony's fix:
+  
+  It seems it was trying to match the wrong way around the circle (it
+  should look for the sequences anticlockwise I think). I'm not sure
+  why this is happening on one of the logs and not the other. It could
+  be that the image coordinates are flipped in one axis.
+
+  Anyway, this fixed it:
+  403c403
+  < 	if (rounded[l] != 3 && rounded[l] != seqs[j][15 - (k + l) % 16])
+  ---
+  > 	if (rounded[l] != 3 && rounded[l] != seqs[j][(k + l) % 16])
+  
+  You should check that the angle it reports is correct.
+*/
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -422,7 +440,8 @@ void identify(std::vector<uint8> leds, std::vector<eBug> &eBugsInfo, int &count)
       // Try to match observed sequence to one from the table
       uint8 l;
       for (l = 0; l<16; l++)
-	if (rounded[l] != 3 && rounded[l] != seqs[j][15 - (k + l) % 16]) break;
+	if (rounded[l] != 3 && rounded[l] != seqs[j][(k + l) % 16])
+	  break;	
       if (l == 16) {
 	matched ^= true;
 	if (!matched) break; //ensure there is only one match

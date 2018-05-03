@@ -6,13 +6,9 @@ from std_msgs.msg import String
 from itertools import izip
 #import settings
 
-'''
-We get the eBug pose information in the callback, and use it in the main
-to update the eBug Arena view.
-Directly dealing with the imagery in the callback does not work.
-See: https://answers.ros.org/question/257440/python-opencv-namedwindow-and-imshow-freeze/
-'''
-class getEBugPoses():
+class getEBugPoses(object):
+    data = ''
+
     def __init__(self):
         self.sub = rospy.Subscriber("poses", String, self.callback)
         self.params = None # Do we need it?
@@ -21,7 +17,7 @@ class getEBugPoses():
 #       rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
         rospy.loginfo("Callback: %s", data.data)
         self.data = data.data
-# end class updateArenaView()
+# end class detEBugPoses()
 
 def show_arena():
     rospy.init_node('visualization', anonymous=True)
@@ -31,7 +27,7 @@ def show_arena():
 
     count = 0
     while (True):
-        img = np.zeros((480, 640, 3), np.uint8)
+        img = np.zeros((512, 640, 3), np.uint8)
         rospy.loginfo("Main: %s", eBugPoses.data)
         # Place the eBugs on arena view by using the eBugPoses.data
         cv2.circle(img, (100, 200), 50, (0,255,0), -1)
@@ -39,7 +35,7 @@ def show_arena():
                     cv2.FONT_HERSHEY_PLAIN, 4, (0, 0, 255), 1, cv2.LINE_AA)
         cv2.imshow(u'eBug Arena', img)
         k = cv2.waitKey(1) & 0xFF
-        if k == 27: break
+        if k == 'q': break
         count += 1
 
     rospy.spin() # Simply keeps python from exiting until this node is stopped.
@@ -50,3 +46,19 @@ if __name__ == '__main__':
         show_arena()
     except rospy.ROSInterruptException:
         pass
+
+
+'''
+We get the eBug pose information in the callback, and use it in the main
+to update the eBug Arena view.
+Directly dealing with the imagery in the callback does not work.
+See: https://answers.ros.org/question/257440/python-opencv-namedwindow-and-imshow-freeze/
+--------
+If there is another blocking call that keeps your program running,
+there is no need to call rospy.spin(). Unlike in C++ where spin() is
+needed to process all the threads, in python all it does is block.
+
+Edit: Here's a Python/Tk node I wrote a while ago that might help:
+https://code.google.com/p/wu-robotics/source/browse/trunk/missouri/missouri_telepresence/demogui.py
+
+'''
