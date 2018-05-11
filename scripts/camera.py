@@ -50,8 +50,11 @@ else:
     raise RuntimeError(u'No cameras found')
 
 # We are operating the camera at SXGA resolution.
-# overclock PSoC and camera (default is 48MHz, which gives 15fps SXGA,
+
+# If you want to
+# overclock th PSoC and camera (default is 48MHz, which gives 15fps SXGA,
 # 30fps VGA, 60fps CIF and 120fps QCIF)
+# unncomment this:
 # nrf.send_packet('\x94'+chr(64))
 
 cv2.namedWindow(u'Blob Camera')

@@ -13,7 +13,7 @@
 */
 
 /*
-  ## jeudi 22 mars 2018, 13:52:34 (UTC+0100) Ahmet
+  jeudi 22 mars 2018, 13:52:34 (UTC+0100) Ahmet
   * Eigen library Erwin used is too old.
   * Updated Eigen to Version 3.3.4
   * try_eigen.cpp: I used it for testing the eigen library and

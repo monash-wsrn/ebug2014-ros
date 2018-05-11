@@ -7,9 +7,7 @@ from __future__ import print_function
 
 from Tkinter import *
 from PIL import Image, ImageTk # Python Imaging Library
-import numpy as np
-
-import cv2
+import cv2, numpy as np
 
 class cameraGUI(object):
 	slider1Value = 0
@@ -24,16 +22,18 @@ class cameraGUI(object):
 		self.updateCamView()
 
 		# Create the buttons
-		self.res_btn = Button(master, text="Reset Camera", command=self.reset_cam)
+		self.res_btn = Button(master, text="Reset Camera",
+							  command=self.reset_cam)
 		self.res_btn.pack(side="bottom", fill="both", expand="yes", padx="10",
 					 pady="10")
-		self.cal_btn = Button(master, text="Calibration", command=self.calibrate_cam)
+		self.cal_btn = Button(master, text="Calibration",
+							  command=self.calibrate_cam)
 		self.cal_btn.pack(side="bottom", fill="both", expand="yes", padx="10",
-					 pady="10")
+						  pady="10")
 		self.leds_btn = Button(master, text="Illuminate eBugs",
-						  command=self.illuminate_ebugs)
+							   command=self.illuminate_ebugs)
 		self.leds_btn.pack(side="bottom", fill="both", expand="yes", padx="10",
-					  pady="10")
+						   pady="10")
 
 		# Create the sliders
 		self.slider_1 = Scale(master, from_=0, to=256, orient="horizontal")
