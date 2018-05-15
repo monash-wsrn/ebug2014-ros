@@ -14,7 +14,7 @@ class eBugPose:
   x_pos = 0.0
   y_pos = 0.0
   angle = 0.0
-#
+#--
 
 class arenaGUI(object):
   first_view = True
@@ -26,30 +26,42 @@ class arenaGUI(object):
     self.master = master
     master.title('eBug Arena')
     self.updateArenaView(self.data)
-    eBugs = [eBugPose() for i in range(16)] # We can support max 16 eBugs currn.
 
   def updateArenaView(self, data):
-    self.img = np.zeros((512, 640, 3), np.uint8) # Create the blank view
-    cv2.putText(self.img, '%0d' % self.num_ebugs, (0, 50),
+    img = np.zeros((512, 640, 3), np.uint8) # Create the blank view
+    cv2.putText(img, '%0d' % self.num_ebugs, (0, 50),
 		cv2.FONT_HERSHEY_PLAIN, 4, (0, 0, 255), 1, cv2.LINE_AA)
-    self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2RGB)
-    self.img = Image.fromarray(self.img)
-    self.img = ImageTk.PhotoImage(self.img)
-    
+    if not self.first_view:
+      ebug_poses = data.split(' ') 
+      self.num_ebugs = int(ebug_poses[0])
+      rospy.loginfo("We see %d eBugs in this view.", self.num_ebugs)
+      for i in range(0, self.num_ebugs):
+        j = (i * 4) + 1
+        ebug_id = int(ebug_poses[j])
+        if (ebug_id not in self.eBugs):
+          self.eBugs[ebug_id] = eBugPose()
+        self.eBugs[ebug_id].x_pos = float(ebug_poses[j+1])
+        self.eBugs[ebug_id].y_pos = float(ebug_poses[j+2])
+        self.eBugs[ebug_id].angle = float(ebug_poses[j+3])
+        cv2.circle(img, (int(self.eBugs[ebug_id].x_pos) // 2,
+                         int(self.eBugs[ebug_id].y_pos) // 2),
+                         50, (0,255,0), -1, cv2.LINE_AA)
+      #-- for
+    #-- if
+    # OpenCV represents images in BGR order, however PIL represents
+    # images in RGB order, hence we need to swap the channels:
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img = Image.fromarray(img)    # Convert the image to PIL format, and
+    img = ImageTk.PhotoImage(img) # then to ImageTk format. 
+
     if self.first_view:
-      self.arena_view = Label(image=self.img)
-      self.arena_view.image = self.img
+      self.arena_view = Label(image=img)
       self.arena_view.pack(side="left", padx=10, pady=10)
       self.first_view = False
-    else:
-      self.num_ebugs, self.ebug_poses = data.split(' ', 1)
-      self.num_ebugs = int(self.num_ebugs)
-      for i in range(1, self.num_ebugs):
-        print('tomorrow complete here')
-#        eBugs[int(ebug_poses[i])]. 
-      self.arena_view.configure(image=self.img)
-      self.arena_view.image = self.img
-# <=> class arenaGUI
+    self.arena_view.configure(image=img)
+    self.arena_view.image = img
+
+#-- class arenaGUI
 		
 class getEBugPoses(object):
   data = ''
@@ -62,7 +74,7 @@ class getEBugPoses(object):
     rospy.loginfo("Callback: %s", data.data)
     self.data = data.data
     self.av.updateArenaView(self.data)
-# <=> class getEBugPoses
+#-- class getEBugPoses
 
 if __name__ == '__main__':
   try:
@@ -74,7 +86,7 @@ if __name__ == '__main__':
     # rospy.spin()
   except rospy.ROSInterruptException:
     pass
-  
+
   
 """
 If there is another blocking call that keeps your program running,
