@@ -11,9 +11,9 @@ from PIL import Image, ImageTk # Python Imaging Library
 #import settings
 
 class eBugPose:
-  x_pos = 0.0
-  y_pos = 0.0
-  angle = 0.0
+  x_pos = 0.0 # in camera pixel coordinates
+  y_pos = 0.0 # in camera pixel coordinates
+  angle = 0.0 # in degrees
 #--
 
 class arenaGUI(object):
@@ -30,7 +30,7 @@ class arenaGUI(object):
   def updateArenaView(self, data):
     img = np.zeros((512, 640, 3), np.uint8) # Create the blank view
     cv2.putText(img, '%0d' % self.num_ebugs, (0, 50),
-		cv2.FONT_HERSHEY_PLAIN, 4, (0, 0, 255), 1, cv2.LINE_AA)
+		cv2.FONT_HERSHEY_DUPLEX, 2, (0, 0, 255), 1, cv2.LINE_AA)
     if not self.first_view:
       ebug_poses = data.split(' ') 
       self.num_ebugs = int(ebug_poses[0])
@@ -43,9 +43,16 @@ class arenaGUI(object):
         self.eBugs[ebug_id].x_pos = float(ebug_poses[j+1])
         self.eBugs[ebug_id].y_pos = float(ebug_poses[j+2])
         self.eBugs[ebug_id].angle = float(ebug_poses[j+3])
-        cv2.circle(img, (int(self.eBugs[ebug_id].x_pos) // 2,
-                         int(self.eBugs[ebug_id].y_pos) // 2),
-                         50, (0,255,0), -1, cv2.LINE_AA)
+        c_x = int(self.eBugs[ebug_id].x_pos) // 2
+        c_y = int(self.eBugs[ebug_id].y_pos) // 2
+        cv2.circle(img, (c_x, c_y), 30, (0,255,0), -1, cv2.LINE_AA)
+        cv2.putText(img, '%0d' % ebug_id, (c_x - 10, c_y + 12),
+		    cv2.FONT_HERSHEY_DUPLEX, 1, (255, 0, 255), 3, cv2.LINE_AA)
+
+        theta = self.eBugs[ebug_id].angle
+        x1 = c_x + int(30 * math.cos(math.radians(theta)))
+        y1 = c_y + int(30 * math.sin(math.radians(theta)))
+        cv2.arrowedLine(img, (c_x, c_y), (x1, y1), (0,0,255), 3, 8, 0, 0.5)
       #-- for
     #-- if
     # OpenCV represents images in BGR order, however PIL represents
@@ -60,7 +67,6 @@ class arenaGUI(object):
       self.first_view = False
     self.arena_view.configure(image=img)
     self.arena_view.image = img
-
 #-- class arenaGUI
 		
 class getEBugPoses(object):
